@@ -1,0 +1,63 @@
+:root { --ink: #243347; --muted: #657487; --accent: #244c70; --line: #dce3ea; }
+html { scroll-behavior: auto; }
+body { color: var(--ink); background: #fff; font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif; font-size: 16px; line-height: 1.8; }
+.main-container { max-width: 980px; padding: 30px 32px 64px; }
+#header { padding: 12px 0 24px; margin-bottom: 28px; border-bottom: 3px solid var(--accent); }
+#header .title { font-size: 32px; line-height: 1.4; letter-spacing: .02em; margin: 0 0 12px; border: 0; padding: 0; }
+#header .subtitle { font-size: 18px; color: var(--muted); margin: 0 0 12px; }
+#header .date { font-size: 13px; color: var(--muted); }
+h1, h2 { color: var(--ink); font-weight: 600; line-height: 1.5; }
+.section > h1 { font-size: 25px; margin: 46px 0 22px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.section > h2 { font-size: 20px; margin: 28px 0 16px; }
+.header-section-number { color: #7b8da0; margin-right: 8px; font-weight: 400; }
+p { margin: 0 0 15px; }
+p.step-label { margin: 25px 0 12px; padding-left: 11px; border-left: 3px solid #9db3c7; color: var(--accent); }
+a { color: #285f89; }
+blockquote { margin: 24px 0; padding: 15px 20px; border-left: 3px solid #8ca9bf; background: #f3f6f9; font-size: 15px; }
+blockquote p:last-child { margin-bottom: 0; }
+pre, code { font-family: Consolas, "Cascadia Mono", "Microsoft YaHei", monospace; }
+code { color: #32546e; background: #f1f4f7; font-size: .88em; border-radius: 3px; padding: 2px 4px; }
+pre { font-size: 13px; line-height: 1.65; border: 1px solid #e2e7ec; border-radius: 5px; padding: 16px 18px; margin: 14px 0 20px; background: #f7f9fb; }
+pre code { padding: 0; background: transparent; color: inherit; font-size: inherit; }
+pre:not(.sourceCode):not(.r) { border-left: 3px solid #becbd5; background: #fff; }
+table { width: 100%; margin: 22px 0 28px; font-size: 14px; line-height: 1.65; border-collapse: collapse; }
+table caption { color: var(--muted); font-size: 14px; text-align: left; padding: 0 0 9px; }
+table th { background: #edf2f6; color: #29455c; font-weight: 600; border-top: 1px solid #ccd7e0; border-bottom: 1px solid #ccd7e0; }
+table th, table td { padding: 10px 12px !important; vertical-align: top; border-bottom: 1px solid #e5eaf0; }
+table tbody tr:nth-child(even) { background: #fafbfd; }
+table code { background: transparent; padding: 0; overflow-wrap: anywhere; white-space: normal; font-size: 12px; }
+img { max-width: 100%; height: auto; }
+.session-info { border: 1px solid var(--line); border-radius: 5px; padding: 12px 16px; margin: 20px 0; }
+.session-info summary { cursor: pointer; color: var(--accent); }
+.session-info pre { margin-bottom: 0; }
+#TOC { font-size: 14px; line-height: 1.6; border: 1px solid var(--line); border-radius: 5px; padding: 18px; background: #fafbfd; margin-bottom: 24px; }
+#TOC .toc-title { font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+#TOC .toc-hint { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+#TOC ul { list-style: none; padding-left: 16px; margin: 0; }
+#TOC > ul { padding-left: 0; }
+#TOC li { margin: 10px 0; }
+#TOC summary { cursor: pointer; }
+#TOC summary::marker { color: #8197aa; }
+#TOC a { color: #405467; text-decoration: none; }
+#TOC a:hover { color: #1e5c8a; text-decoration: underline; }
+#TOC a:focus-visible, #TOC summary:focus-visible { outline: 2px solid #337ab7; outline-offset: 3px; }
+@media (min-width: 1100px) {
+  .main-container { max-width: 1280px; padding-left: 290px; padding-right: 38px; }
+  #TOC { position: fixed; top: 28px; left: max(18px, calc((100vw - 1280px) / 2 + 18px)); width: 238px; max-height: calc(100vh - 56px); overflow-y: auto; }
+}
+@media (max-width: 600px) {
+  .main-container { padding: 20px 18px 40px; }
+  #header .title { font-size: 26px; }
+  body { font-size: 15px; }
+  table { font-size: 12px; }
+  table th, table td { padding: 8px 5px !important; }
+}
+@media print {
+  #TOC { display: none; }
+  .main-container { padding: 0; max-width: none; }
+  body { font-size: 11pt; }
+  h1, h2, .step-label { break-after: avoid; }
+  table, img { break-inside: avoid; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  a[href]:after { content: none !important; }
+}

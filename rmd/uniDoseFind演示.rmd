@@ -1,0 +1,682 @@
+---
+title: "UnifiedDoseFinding：剂量探索方法与应用演示"
+subtitle: 函数结构、数据准备与可复现示例
+date: "2026-11-14"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    highlight: tango
+    css: report.css
+    includes:
+      after_body: toc.html
+  pdf_document:
+    toc: true
+    toc_depth: '2'
+lang: "zh-Hans"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = FALSE, warning = FALSE,
+                     fig.width = 8, fig.height = 4, dpi = 144)
+options(knitr.kable.NA = "—")
+library(UnifiedDoseFinding)
+```
+
+# 包概览
+
+UnifiedDoseFinding 为Ⅰ期剂量探索试验提供剂量决策与模拟工具，涵盖 Ivanova unified design、Quasi-CRM／Robust-Quasi-CRM 和广义 BOIN。除二元毒性结局外，也可使用有序毒性等级对应的评分、毒性负担和连续结局。
+
+本文以 RQ-CRM 为完整示例，再展示其他方法的输入与调用。各节均按“准备数据、下一批剂量、最终选择、模拟试验”展开。
+
+> **演示范围**　基于 UnifiedDoseFinding 0.1.10。每个模拟示例运行 20 次，用于说明函数及输出；文中剂量均指按升序排列的剂量编号。
+
+## 三类函数
+
+包公开导出 18 个函数，按用途分为三类，每类 6 个。
+
+| 函数前缀       | 使用时点               |
+|:---------------|:-----------------------|
+| `next_*`       | 下一批患者选择什么剂量 |
+| `select_mtd_*` | 最终选择哪个剂量       |
+| `get_oc_*`     | 模拟试验函数           |
+
+其中，OC 指 operating characteristics（操作特征）。`get_oc_*` 在指定的真实场景下反复生成患者结局并执行完整试验，汇总各剂量的选择百分比和平均入组人数。
+
+```{r function-map, echo=FALSE, fig.height=3.2}
+par(mar = c(0, 0, 0, 0))
+plot.new()
+plot.window(xlim = c(0, 10), ylim = c(0, 4))
+rect(0.5, 1, 3.2, 2.2, col = "#E8F1FA", border = "#457B9D")
+rect(6.8, 1, 9.5, 2.2, col = "#E8F1FA", border = "#457B9D")
+text(1.85, 1.6, "next_*\n下一批剂量决策")
+text(8.15, 1.6, "select_mtd_*\n试验结束，选择剂量")
+arrows(3.3, 1.6, 6.6, 1.6, length = 0.1)
+text(5, 2, "逐批积累患者数据")
+rect(0.5, 2.8, 9.5, 3.8, col = "#E9F3E7", border = "#54854C")
+text(5, 3.3, "get_oc_*：在假定真实场景下，模拟多次完整试验")
+```
+
+## 18 个函数的对应关系
+
+| 方法／结局 | 下一批剂量 | 最终选择 | 模拟评价 |
+|:---|:---|:---|:---|
+| Ivanova：二元结局 | `next_Ivanova_binary` | `select_mtd_Ivanova_binary` | `get_oc_Ivanova_binary` |
+| Ivanova：连续结局 | `next_Ivanova_continuous` | `select_mtd_Ivanova_continuous` | `get_oc_Ivanova_continuous` |
+| Quasi-BOIN：有序毒性评分 | `next_QuasiBOIN` | `select_mtd_QuasiBOIN` | `get_oc_QuasiBOIN` |
+| Quasi-CRM／Robust-Quasi-CRM：有序毒性评分 | `next_RQ_CRM` | `select_mtd_RQ_CRM` | `get_oc_RQ_CRM` |
+| gBOIN：毒性负担（TB） | `next_gBOIN_TB` | `select_mtd_gBOIN_TB` | `get_oc_gBOIN_TB` |
+| gBOIN：连续结局 | `next_gBOIN_continuous` | `select_mtd_gBOIN_continuous` | `get_oc_gBOIN_continuous` |
+
+# 以RQ-CRM为例
+
+Robust-Quasi-CRM 在多条 skeleton 之间进行模型选择或模型平均，以处理剂量—毒性曲线的模型不确定性；Quasi-CRM 使用单条 skeleton。两者采用有序毒性评分构造准似然。[Yuan 等（2007）、Pan 等（2014）](#参考资料)
+
+**准备数据**
+
+以下沿用包帮助文档的四个评分与六个剂量示例。`target = 0.47` 表示原始评分尺度上的目标均值。
+
+```{r rq-input}
+target <- 0.47
+score <- c(0, 0.5, 1, 1.5)  # 各毒性等级对应的评分
+
+# 每行是一条 skeleton，每列对应一个候选剂量。
+
+p1 <- c(0.11, 0.25, 0.40, 0.55, 0.75, 0.85)
+p2 <- c(0.05, 0.10, 0.15, 0.25, 0.40, 0.65)
+p3 <- c(0.20, 0.40, 0.60, 0.75, 0.85, 0.95)
+skeleton_mat <- rbind(p1, p2, p3)
+
+# 当前各剂量已治疗的人数。
+n <- c(3, 3, 3, 9, 3, 0)
+
+# 各剂量累计的归一化评分；
+y <- c(0, 0, 1, 2 / 1.5, 3, 0)
+dose_current <- 5
+```
+
+`skeleton_mat` 的每一行给出一条归一化平均毒性评分的初始参考曲线。例如，`p1[1] = 0.11` 对应原始评分均值 0.165，患者评分先除以最大评分 1.5，再按剂量累加得到 `y`：
+
+$$
+y_j = \sum_{i=1}^{n_j}\frac{s_{ij}}{s_{\max}}.
+$$
+
+例如，剂量 3 的三名患者评分都是 0.5，则 `y[3] = (0.5 + 0.5 + 0.5) / 1.5 = 1`。 函数内部将 `target` 除以 `max(score)`，得到归一化目标约 0.3133。因此，调用时传入原始目标 0.47，而 `y` 应预先归一化并累加。
+
+```{r observed-data}
+observed <- data.frame(
+  dose = seq_along(n),
+  n = n,
+  y = y,
+  mean_score = ifelse(n > 0, y * max(score) / n, NA_real_)
+)
+knitr::kable(observed, digits = 3,
+             col.names = c("剂量", "人数", "归一化累计评分", "平均原始评分"),
+             caption = "当前数据：mean_score 已还原为原始评分尺度")
+```
+
+**修正变量名**
+
+在包中，`next_RQ_CRM()` 和 `select_mtd_RQ_CRM()` 的形参为 `skeleton`，函数体却引用 `skeletons`。以下进行修改，后续以 `_demo` 后缀调用；已安装的包不作修改。
+
+```{r rq-local-fix}
+next_RQ_CRM_demo <- UnifiedDoseFinding::next_RQ_CRM
+body(next_RQ_CRM_demo) <- bquote({
+  skeletons <- skeleton
+  .(body(next_RQ_CRM_demo))
+})
+
+select_mtd_RQ_CRM_demo <- UnifiedDoseFinding::select_mtd_RQ_CRM
+body(select_mtd_RQ_CRM_demo) <- bquote({
+  skeletons <- skeleton
+  .(body(select_mtd_RQ_CRM_demo))
+})
+```
+
+**下一批剂量**
+
+```{r rq-next}
+next_dose <- next_RQ_CRM_demo(
+  target = target, n = n, y = y, dose.curr = dose_current,
+  score = score, skeleton = skeleton_mat, mselection = 1
+)
+next_dose
+```
+
+`mselection = 1` 表示在多条 skeleton 之间做贝叶斯模型选择； 设为 `0` 时使用模型平均。 `next_dose` 是模型推荐的下一批剂量编号。 若最低剂量过毒的后验概率超过 `cutoff.eli`，此函数返回 `99` 表示停止； 否则根据估计结果保持剂量或上、下调整一级。
+
+当前为第`r dose_current`剂量，下一批建议第`r next_dose`剂量。
+
+**最终选择**
+
+```{r rq-select}
+selected_dose <- select_mtd_RQ_CRM_demo(
+  target = target, n = n, y = y, score = score,
+  skeleton = skeleton_mat, mselection = 1
+)
+selected_dose
+```
+
+此处复用当前数据，演示假定试验结束时的选择：第 `r selected_dose` 剂量。`next` 按当前剂量逐级调整，`select_mtd` 选择估计均值最接近目标的剂量。
+
+**模拟试验**
+
+前两个函数使用已观察的数据。模拟还需要指定每个剂量下各毒性评分发生的真实概率。 RQ-CRM 的 `ptox` 矩阵按**行放评分等级、列放剂量**，每列概率之和为 1。
+
+```{r rq-scenario}
+ptox <- rbind(
+  c(0.83, 0.75, 0.62, 0.51, 0.34, 0.19),
+  c(0.12, 0.15, 0.18, 0.19, 0.16, 0.11),
+  c(0.04, 0.07, 0.11, 0.14, 0.15, 0.11),
+  c(0.01, 0.03, 0.09, 0.16, 0.35, 0.59)
+)
+
+true_mean <- as.numeric(score %*% ptox)
+true_mtd <- which.min(abs(true_mean - target))
+knitr::kable(data.frame(dose = seq_along(true_mean), true_mean),
+             digits = 3, col.names = c("剂量", "真实平均评分"),
+             caption = "场景中的真实平均评分")
+```
+
+在这个场景下，按真实平均评分最接近目标定义的目标剂量是第 `r true_mtd` 剂量。 下面进行模拟试验。
+
+```{r rq-simulation}
+ntrial_demo <- 20
+oc_rq <- get_oc_RQ_CRM(
+  ptox = ptox, skeletons = skeleton_mat,
+  target = target, score = score,
+  cohortsize = 3, ncohort = 10,
+  n.earlystop = 100, start.dose = 1,
+  mselection = 1, cutoff.eli = 0.9,
+  ntrial = ntrial_demo, seed = 100
+)
+
+oc_table <- data.frame(
+  dose = seq_along(true_mean),
+  true_mean = true_mean,
+  selection_percent = oc_rq$selpercent,
+  mean_n = oc_rq$nptsdose
+)
+knitr::kable(oc_table, digits = 2,
+             col.names = c("剂量", "真实平均评分", "选择百分比（%）", "平均入组人数"),
+             caption = "RQ-CRM 的选择百分比与各剂量平均入组人数")
+```
+
+`ncohort = 10`、`cohortsize = 3` 对应最多 30 名患者； `n.earlystop` 是单个剂量的累计入组人数阈值，此处设为 100，使本例不会触发该规则。 `selpercent` 的单位是百分比，`nptsdose` 是每个剂量平均纳入患者数。 过毒停止可能使选择百分比之和小于 100%。
+
+`selection_percent` 对应 `selpercent`，`mean_n` 对应 `nptsdose`。下文结果表沿用这两个指标。
+
+# 其他模型
+
+下面每种方法都按“整理输入 → 下一剂量 → 最终选择 → 模拟评价”展开。 重点补充与 RQ-CRM 不同的数据形式和规则。
+
+| 方法 | 主要差异 |
+|:---|:---|
+| Quasi-CRM | 使用单条 skeleton，与 RQ-CRM 共用函数 |
+| Quasi-BOIN | 使用归一化评分及同尺度目标；`p.true` 每行一个剂量，需将本例 `ptox` 转置；最终选择的参数名是 `npts`、`ntox` |
+| Ivanova（二元） | `y` 是各剂量的事件总数，`target` 是目标事件概率，`eps` 控制升降剂量阈值 |
+| Ivanova（连续） | 决策函数使用逐剂量的个体结局列表 `c_resp`，保留估计标准差所需的信息 |
+| gBOIN（TB） | 输入毒性负担及其权重；模拟的 `pmat` 是逐剂量概率矩阵组成的列表 |
+| gBOIN（连续） | 观察数据中的 `y` 是连续结局总和，模拟用 `c_true` 指定真实均值；本版源码按剂量编号 `d` 使用标准差 `0.3 * d` |
+
+<!-- 不同函数的参数名、返回结构与停止规则并不完全一致。 -->
+
+# Quasi-CRM
+
+Quasi-CRM 与 RQ-CRM 共用三个函数，只需要将多条 skeleton 换为单条。 这里继续使用前面的患者数据、评分和真实场景。
+
+**下一批剂量**
+
+```{r qcrm-next}
+next_dose_qcrm <- next_RQ_CRM_demo(
+  target = target, n = n, y = y, dose.curr = dose_current,
+  score = score, skeleton = p1
+)
+next_dose_qcrm
+```
+
+当前为第`r dose_current`剂量，下一批建议第`r next_dose_qcrm`剂量。
+
+**最终选择**
+
+```{r qcrm-select}
+selected_dose_qcrm <- select_mtd_RQ_CRM_demo(
+  target = target, n = n, y = y, score = score, skeleton = p1
+)
+selected_dose_qcrm
+```
+
+**模拟试验**
+
+```{r qcrm-simulation}
+oc_qcrm <- get_oc_RQ_CRM(
+  ptox = ptox, skeletons = p1,
+  target = target, score = score,
+  cohortsize = 3, ncohort = 10,
+  n.earlystop = 100, start.dose = 1,
+  cutoff.eli = 0.9, ntrial = ntrial_demo, seed = 100
+)
+
+knitr::kable(data.frame(
+  dose = seq_along(true_mean),
+  true_mean = true_mean,
+  selection_percent = oc_qcrm$selpercent,
+  mean_n = oc_qcrm$nptsdose
+), digits = 2,
+   col.names = c("剂量", "真实均值", "选择百分比（%）", "平均入组人数"),
+   caption = "Quasi-CRM 的模拟结果")
+```
+
+# Quasi-BOIN
+
+**准备数据**
+
+Quasi-BOIN 使用归一化评分。与前面的 RQ-CRM 不同，这里的目标也要在调用前归一化。 `y` 已经是归一化评分的累计值，可以直接沿用。
+
+```{r qb-input}
+target_qb <- target / max(score)
+score_qb <- score / max(score)
+n_qb <- n
+y_qb <- y
+d_qb <- dose_current
+```
+
+这里的 `target_qb` 是目标平均归一化评分，不是 DLT 发生率。
+
+**下一批剂量**
+
+```{r qb-next}
+```
+
+```{r qb-next}
+next_dose_qb <- next_QuasiBOIN(
+  target = target_qb, n = n_qb, y = y_qb, d = d_qb,
+  p.saf = 0.6 * target_qb, p.tox = 1.4 * target_qb,
+  cutoff.eli = 0.95, extrasafe = FALSE, n.earlystop = 100
+)
+next_dose_qb
+```
+
+`p.saf` 和 `p.tox` 分别指定偏低、偏高的参考评分，函数据此计算升降剂量边界。本文使用 `extrasafe = FALSE`；本版 `next_QuasiBOIN()` 的额外安全分支引用了未在形参中定义的 `offset`，开启该分支前需修正实现。 返回剂量编号；若触发最低剂量过毒的停止规则，则返回 `99`。
+
+**最终选择**
+
+```{r qb-select}
+selected_dose_qb <- select_mtd_QuasiBOIN(
+  target = target_qb, npts = n_qb, ntox = y_qb,
+  cutoff.eli = 0.95, extrasafe = FALSE, print = FALSE
+)
+selected_dose_qb
+```
+
+这里人数的参数名是 `npts`，累计评分的参数名是 `ntox`。 `print = FALSE` 时返回选择的剂量编号，`99` 表示不推荐剂量。
+
+**模拟试验**
+
+`p.true` 每行一个剂量、每列一个评分等级，需要将前面的 `ptox` 转置。
+
+```{r qb-scenario}
+p_true_qb <- t(ptox)
+true_mean_qb <- as.numeric(p_true_qb %*% score_qb)
+```
+
+```{r qb-simulation, results='hide'}
+oc_qb <- get_oc_QuasiBOIN(
+  target = target_qb, p.true = p_true_qb, score = score_qb,
+  ncohort = 10, cohortsize = 3,
+  n.earlystop = 100, startdose = 1,
+  p.saf = 0.6 * target_qb, p.tox = 1.4 * target_qb,
+  cutoff.eli = 0.95, extrasafe = FALSE,
+  ntrial = ntrial_demo, seed = 100
+)
+```
+
+```{r qb-result}
+knitr::kable(data.frame(
+  dose = seq_along(true_mean_qb),
+  true_mean = true_mean_qb,
+  selection_percent = oc_qb$selpercent,
+  mean_n = oc_qb$nptsdose
+), digits = 3,
+   col.names = c("剂量", "真实均值", "选择百分比（%）", "平均入组人数"),
+   caption = "Quasi-BOIN 的模拟结果（均值为归一化评分）")
+```
+
+# Ivanova
+
+Ivanova unified design 使用当前剂量下的标准化统计量进行升降决策；试验结束时通过保序估计选择接近目标的剂量。[Ivanova 与 Kim（2009）](#参考资料)
+
+## 二元结局
+
+**准备数据**
+
+二元结局下，每名患者只有发生或未发生 DLT 两种情况。 此时 `y` 是 DLT 人数，`target` 才是目标 DLT 发生率。
+
+```{r iv-binary-input}
+target_ib <- 0.3
+eps_ib <- 1
+n_ib <- c(3, 15, 0, 0, 0, 0)
+y_ib <- c(0, 4, 0, 0, 0, 0)
+d_ib <- 2
+```
+
+**下一批剂量**
+
+```{r iv-binary-next}
+next_dose_ib <- next_Ivanova_binary(
+  target = target_ib, eps = eps_ib, y = y_ib, n = n_ib, d = d_ib
+)
+next_dose_ib
+```
+
+`eps` 控制升降剂量的判断阈值。函数计算当前剂量的标准化统计量， 低于 `-eps` 时升一级，高于 `eps` 时降一级，其余情况保持当前剂量。
+
+**最终选择**
+
+```{r iv-binary-select}
+selected_ib <- select_mtd_Ivanova_binary(
+  target = target_ib, y = y_ib, n = n_ib
+)
+selected_ib
+```
+
+这里返回的是列表，`selected_ib$dselect` 是最终剂量编号，`selected_ib$n` 是各剂量人数。
+
+**模拟试验**
+
+```{r iv-binary-simulation}
+truetox_ib <- c(0.05, 0.10, 0.20, 0.30, 0.45, 0.60)
+
+oc_ib <- get_oc_Ivanova_binary(
+  target = target_ib, eps = eps_ib, truetox = truetox_ib,
+  ncohort = 10, cohortsize = 3, n.earlystop = 100,
+  ntrial = ntrial_demo, startdose = 1, seed = 100
+)
+
+knitr::kable(data.frame(
+  dose = seq_along(truetox_ib),
+  true_dlt_rate = truetox_ib,
+  selection_percent = oc_ib$selpercent,
+  mean_n = oc_ib$nptsdose
+), digits = 2,
+   col.names = c("剂量", "真实 DLT 率", "选择百分比（%）", "平均入组人数"),
+   caption = "Ivanova 二元结局的模拟结果")
+```
+
+`truetox_ib` 指定各剂量下真实的 DLT 发生率，函数按二项分布生成 DLT 人数。
+
+## 连续结局
+
+**准备数据**
+
+连续结局需要保留每名患者的观测值，因为下一剂量决策还要计算标准差。 `c_resp` 是一个列表，每个元素存放一个剂量下的全部观测值。
+
+```{r iv-continuous-input}
+target_ic <- 1.47
+eps_ic <- 1
+c_resp_ic <- list(
+  c(0.05, 0.12, 0.10),
+  c(0.47, 0.28, 0.33),
+  c(0.39, 1.61, 0.16),
+  c(0.94, 1.60, 1.61, 1.17, 2.56, 1.65, 1.43, 0.90, 2.22),
+  numeric(0),
+  numeric(0)
+)
+n_ic <- lengths(c_resp_ic)
+d_ic <- 4
+```
+
+`numeric(0)` 表示该剂量还没有观测值；`lengths()` 统计各元素长度，得到各剂量人数。
+
+**下一批剂量**
+
+```{r iv-continuous-next}
+next_dose_ic <- next_Ivanova_continuous(
+  target = target_ic, eps = eps_ic,
+  c_resp = c_resp_ic, n = n_ic, d = d_ic
+)
+next_dose_ic
+```
+
+**最终选择**
+
+```{r iv-continuous-select}
+selected_ic <- select_mtd_Ivanova_continuous(
+  target = target_ic, c_resp = c_resp_ic, n = n_ic
+)
+selected_ic
+```
+
+最终剂量编号在 `selected_ic$dselect` 中。
+
+**模拟试验**
+
+```{r iv-continuous-simulation}
+ptox_ic <- c(0.11, 0.25, 0.94, 1.47, 2.38, 2.40)
+
+oc_ic <- get_oc_Ivanova_continuous(
+  target = target_ic, eps = eps_ic, ptox = ptox_ic,
+  ncohort = 10, cohortsize = 3, n.earlystop = 100,
+  ntrial = ntrial_demo, startdose = 1, seed = 100
+)
+
+knitr::kable(data.frame(
+  dose = seq_along(ptox_ic),
+  true_mean = ptox_ic,
+  selection_percent = oc_ic$selpercent,
+  mean_n = oc_ic$nptsdose
+), digits = 2,
+   col.names = c("剂量", "真实均值", "选择百分比（%）", "平均入组人数"),
+   caption = "Ivanova 连续结局的模拟结果")
+```
+
+这里的 `ptox` 指真实连续结局均值，不是发生概率。 本版模拟函数按正态分布生成结局，标准差设为均值的绝对值，因此模拟值可能为负数。
+
+# gBOIN
+
+gBOIN 将观测均值与预设决策边界比较，给出升、降或维持剂量的决策。以下分别演示毒性负担和连续结局。[Mu 等（2019）](#参考资料)
+
+## 毒性负担（TB）
+
+**准备数据**
+
+TB 指 toxicity burden，即毒性负担。同一名患者可能有多种毒性， 将各类毒性对应的权重加起来，得到这名患者的 TB。 下面使用帮助文档中的权重，并取前六个剂量演示。
+
+```{r gboin-tb-input}
+target_tb <- 3.344
+n_tb <- c(3, 9, 6, 0, 0, 0)
+y_tb <- c(5.5, 26.95, 25.3, 0, 0, 0)
+d_tb <- 2
+
+# 行对应毒性类型，列对应该类型的等级。
+weight_tb <- 1.1 * rbind(
+  c(0, 1, 1.5, 5, 6),
+  c(0, 2.5, 6, 0, 0),
+  c(0, 2, 3, 6, 0),
+  c(0, 1.5, 2, 0, 0),
+  c(0, 0.5, 1, 0, 0)
+)
+```
+
+`y_tb` 是各剂量下所有患者 TB 的累计值，`y_tb / n_tb` 才是平均 TB。 这里使用原始 TB 尺度，不需要除以最大权重。
+
+**下一批剂量**
+
+```{r gboin-tb-next}
+next_dose_tb <- next_gBOIN_TB(
+  target = target_tb, n = n_tb, y = y_tb, d = d_tb,
+  mu_1 = 0.6 * target_tb, mu_2 = 1.4 * target_tb
+)
+next_dose_tb
+```
+
+函数将当前剂量的平均 TB 与两个边界比较：不高于 `(target + mu_1) / 2` 时升一级，不低于 `(target + mu_2) / 2` 时降一级；在最高、最低剂量处不越界。当前均值为 `r round(y_tb[d_tb] / n_tb[d_tb], 3)`，下一批推荐第 `r next_dose_tb` 剂量。
+
+**最终选择**
+
+```{r gboin-tb-select}
+selected_dose_tb <- select_mtd_gBOIN_TB(
+  target = target_tb, npts = n_tb, ntox = y_tb
+)
+selected_dose_tb
+```
+
+**模拟试验**
+
+`pmat` 是一个列表，每个元素对应一个剂量。 元素中的矩阵与 `weight_tb` 对齐：行是毒性类型，列是等级，每行概率之和为 1。 本版源码固定模拟五种毒性，下面因此保留五行。
+
+```{r gboin-tb-scenario}
+pmat_tb <- list(
+  rbind(
+    c(0.5, 0.5, 0, 0, 0),
+    c(1, 0, 0, 0, 0),
+    c(1, 0, 0, 0, 0),
+    c(1, 0, 0, 0, 0),
+    c(0.5, 0, 0.5, 0, 0)
+  ),
+  rbind(
+    c(0.5, 0, 0.5, 0, 0),
+    c(1, 0, 0, 0, 0),
+    c(0.5, 0.5, 0, 0, 0),
+    c(0.5, 0.5, 0, 0, 0),
+    c(0.46, 0, 0.54, 0, 0)
+  ),
+  rbind(
+    c(0.5, 0, 0.5, 0, 0),
+    c(0.4, 0.6, 0, 0, 0),
+    c(0.25, 0.75, 0, 0, 0),
+    c(0.5, 0.5, 0, 0, 0),
+    c(1, 0, 0, 0, 0)
+  ),
+  rbind(
+    c(0.5, 0, 0.5, 0, 0),
+    c(0.4, 0.6, 0, 0, 0),
+    c(0.25, 0.75, 0, 0, 0),
+    c(0.5, 0.5, 0, 0, 0),
+    c(0.5, 0, 0.5, 0, 0)
+  ),
+  rbind(
+    c(0.5, 0, 0.5, 0, 0),
+    c(0, 1, 0, 0, 0),
+    c(0.25, 0.75, 0, 0, 0),
+    c(0.5, 0.5, 0, 0, 0),
+    c(0.5, 0, 0.5, 0, 0)
+  ),
+  rbind(
+    c(0, 0.5, 0.5, 0, 0),
+    c(0, 1, 0, 0, 0),
+    c(0, 1, 0, 0, 0),
+    c(0.5, 0.5, 0, 0, 0),
+    c(0.5, 0, 0.5, 0, 0)
+  )
+)
+
+true_mean_tb <- sapply(pmat_tb, function(p) sum(p * weight_tb))
+```
+
+例如第一剂量的第一种毒性，有 50% 的概率取第一个等级，另 50% 取第二个等级。 真实平均 TB 可用各等级概率乘以对应权重，再对全部毒性类型求和。
+
+```{r gboin-tb-simulation}
+oc_tb <- get_oc_gBOIN_TB(
+  target = target_tb, pmat = pmat_tb, weight = weight_tb,
+  ncohort = 10, cohortsize = 3, n.earlystop = 100,
+  ntrial = ntrial_demo,
+  mu_1 = 0.6 * target_tb, mu_2 = 1.4 * target_tb,
+  startdose = 1, seed = 100
+)
+
+knitr::kable(data.frame(
+  dose = seq_along(true_mean_tb),
+  true_mean = true_mean_tb,
+  selection_percent = oc_tb$selpercent,
+  mean_n = oc_tb$nptsdose
+), digits = 3,
+   col.names = c("剂量", "真实均值", "选择百分比（%）", "平均入组人数"),
+   caption = "gBOIN 毒性负担的模拟结果")
+```
+
+## 连续结局
+
+**准备数据**
+
+这里沿用 Ivanova 连续结局的患者数据。 gBOIN 的决策只需要各剂量的人数和结局总和，不需要传入个体观测列表。
+
+```{r gboin-continuous-input}
+target_gc <- target_ic
+n_gc <- n_ic
+y_gc <- sapply(c_resp_ic, sum)
+d_gc <- d_ic
+```
+
+**下一批剂量**
+
+```{r gboin-continuous-next}
+next_dose_gc <- next_gBOIN_continuous(
+  target = target_gc, n = n_gc, y = y_gc, d = d_gc,
+  mu_1 = 0.6 * target_gc, mu_2 = 1.4 * target_gc
+)
+next_dose_gc
+```
+
+**最终选择**
+
+```{r gboin-continuous-select}
+selected_dose_gc <- select_mtd_gBOIN_continuous(
+  target = target_gc, npts = n_gc, ntox = y_gc
+)
+selected_dose_gc
+```
+
+**模拟试验**
+
+```{r gboin-continuous-simulation}
+c_true_gc <- c(0.11, 0.25, 0.94, 1.47, 2.38, 2.40)
+
+oc_gc <- get_oc_gBOIN_continuous(
+  target = target_gc, c_true = c_true_gc,
+  ncohort = 10, cohortsize = 3, n.earlystop = 100,
+  ntrial = ntrial_demo,
+  mu_1 = 0.6 * target_gc, mu_2 = 1.4 * target_gc,
+  startdose = 1, seed = 100
+)
+
+knitr::kable(data.frame(
+  dose = seq_along(c_true_gc),
+  true_mean = c_true_gc,
+  selection_percent = oc_gc$selpercent,
+  mean_n = oc_gc$nptsdose
+), digits = 2,
+   col.names = c("剂量", "真实均值", "选择百分比（%）", "平均入组人数"),
+   caption = "gBOIN 连续结局的模拟结果")
+```
+
+`c_true` 指定各剂量的真实均值。本版源码使用正态分布生成结局， 第 `d` 剂量的标准差为 `0.3 * d`，与 Ivanova 连续模拟函数的设定不同。
+
+# 参考资料 {#参考资料}
+
+**包与实现**
+
+- [CRAN：UnifiedDoseFinding](https://cran.r-project.org/package=UnifiedDoseFinding) 与 [源码镜像](https://github.com/cran/UnifiedDoseFinding)。本文参数说明、返回值及版本问题依据本机 0.1.10 帮助文档和实现核对。
+- [DeepWiki：UnifiedDoseFinding](https://deepwiki.com/cran/UnifiedDoseFinding)，作为补充阅读入口。
+
+**方法文献**
+
+1.  Yuan Z, Chappell R, Bailey H. The continual reassessment method for multiple toxicity grades: a Bayesian quasi-likelihood approach. *Biometrics*, 2007, 63: 173–179. [DOI](https://doi.org/10.1111/j.1541-0420.2006.00666.x)
+2.  Pan H, et al. The continual reassessment method for multiple toxicity grades: a Bayesian model selection approach. *PLOS ONE*, 2014, 9: e98147. [DOI](https://doi.org/10.1371/journal.pone.0098147)
+3.  Ivanova A, Kim SH. Dose finding for continuous and ordinal outcomes with a monotone objective function: a unified approach. *Biometrics*, 2009, 65: 307–315. [DOI](https://doi.org/10.1111/j.1541-0420.2008.01045.x)
+4.  Mu R, Yuan Y, Xu J, Mandrekar SJ, Yin J. gBOIN: a unified model-assisted phase I trial design accounting for toxicity grades, and binary or continuous end points. *Journal of the Royal Statistical Society: Series C*, 2019, 68: 289–308. [DOI](https://doi.org/10.1111/rssc.12263)
+
+# 运行环境
+
+各节按文档顺序执行，后续示例复用前文对象。模拟统一使用随机种子 100、每队列 3 人、最多 10 个队列、20 次重复；各方法的目标、结局分布和安全规则见相应代码。
+
+<details class="session-info">
+
+<summary>查看 R 与依赖包版本</summary>
+
+```{r session-info, echo=FALSE}
+sessionInfo()
+```
+
+</details>

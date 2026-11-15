@@ -1,0 +1,1299 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+  chinese,
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\ifLuaTeX
+\usepackage[bidi=basic,shorthands=off,provide=*]{babel}
+\else
+\usepackage[bidi=default,shorthands=off,provide=*]{babel}
+\fi
+\ifLuaTeX
+  \usepackage{selnolig} % disable illegal ligatures
+\fi
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  pdftitle={UnifiedDoseFinding：剂量探索方法与应用演示},
+  pdflang={zh-CN},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{UnifiedDoseFinding：剂量探索方法与应用演示}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{函数结构、数据准备与可复现示例}
+\author{}
+\date{\vspace{-2.5em}2026-11-14}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\section{包概览}\label{ux5305ux6982ux89c8}
+
+UnifiedDoseFinding 为Ⅰ期剂量探索试验提供剂量决策与模拟工具，涵盖 Ivanova
+unified design、Quasi-CRM／Robust-Quasi-CRM 和广义
+BOIN。除二元毒性结局外，也可使用有序毒性等级对应的评分、毒性负担和连续结局。
+
+本文以 RQ-CRM
+为完整示例，再展示其他方法的输入与调用。各节均按``准备数据、下一批剂量、最终选择、模拟试验''展开。
+
+\begin{quote}
+\textbf{演示范围}　基于 UnifiedDoseFinding 0.1.10。每个模拟示例运行 20
+次，用于说明函数及输出；文中剂量均指按升序排列的剂量编号。
+\end{quote}
+
+\subsection{三类函数}\label{ux4e09ux7c7bux51fdux6570}
+
+包公开导出 18 个函数，按用途分为三类，每类 6 个。
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+函数前缀 & 使用时点 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{next\_*} & 下一批患者选择什么剂量 \\
+\texttt{select\_mtd\_*} & 最终选择哪个剂量 \\
+\texttt{get\_oc\_*} & 模拟试验函数 \\
+\end{longtable}
+}
+
+其中，OC 指 operating characteristics（操作特征）。\texttt{get\_oc\_*}
+在指定的真实场景下反复生成患者结局并执行完整试验，汇总各剂量的选择百分比和平均入组人数。
+
+\pandocbounded{\includegraphics[keepaspectratio]{uniDoseFind演示_files/figure-latex/function-map-1.pdf}}
+
+\subsection{18
+个函数的对应关系}\label{ux4e2aux51fdux6570ux7684ux5bf9ux5e94ux5173ux7cfb}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+方法／结局
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+下一批剂量
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+最终选择
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+模拟评价
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Ivanova：二元结局 & \texttt{next\_Ivanova\_binary} &
+\texttt{select\_mtd\_Ivanova\_binary} &
+\texttt{get\_oc\_Ivanova\_binary} \\
+Ivanova：连续结局 & \texttt{next\_Ivanova\_continuous} &
+\texttt{select\_mtd\_Ivanova\_continuous} &
+\texttt{get\_oc\_Ivanova\_continuous} \\
+Quasi-BOIN：有序毒性评分 & \texttt{next\_QuasiBOIN} &
+\texttt{select\_mtd\_QuasiBOIN} & \texttt{get\_oc\_QuasiBOIN} \\
+Quasi-CRM／Robust-Quasi-CRM：有序毒性评分 & \texttt{next\_RQ\_CRM} &
+\texttt{select\_mtd\_RQ\_CRM} & \texttt{get\_oc\_RQ\_CRM} \\
+gBOIN：毒性负担（TB） & \texttt{next\_gBOIN\_TB} &
+\texttt{select\_mtd\_gBOIN\_TB} & \texttt{get\_oc\_gBOIN\_TB} \\
+gBOIN：连续结局 & \texttt{next\_gBOIN\_continuous} &
+\texttt{select\_mtd\_gBOIN\_continuous} &
+\texttt{get\_oc\_gBOIN\_continuous} \\
+\end{longtable}
+}
+
+\section{以RQ-CRM为例}\label{ux4ee5rq-crmux4e3aux4f8b}
+
+Robust-Quasi-CRM 在多条 skeleton
+之间进行模型选择或模型平均，以处理剂量---毒性曲线的模型不确定性；Quasi-CRM
+使用单条
+skeleton。两者采用有序毒性评分构造准似然。\hyperref[ux53c2ux8003ux8d44ux6599]{Yuan
+等（2007）、Pan 等（2014）}
+
+\textbf{准备数据}
+
+以下沿用包帮助文档的四个评分与六个剂量示例。\texttt{target\ =\ 0.47}
+表示原始评分尺度上的目标均值。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{target }\OtherTok{\textless{}{-}} \FloatTok{0.47}
+\NormalTok{score }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{1}\NormalTok{, }\FloatTok{1.5}\NormalTok{)  }\CommentTok{\# 各毒性等级对应的评分}
+
+\CommentTok{\# 每行是一条 skeleton，每列对应一个候选剂量。}
+
+\NormalTok{p1 }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{0.11}\NormalTok{, }\FloatTok{0.25}\NormalTok{, }\FloatTok{0.40}\NormalTok{, }\FloatTok{0.55}\NormalTok{, }\FloatTok{0.75}\NormalTok{, }\FloatTok{0.85}\NormalTok{)}
+\NormalTok{p2 }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{0.05}\NormalTok{, }\FloatTok{0.10}\NormalTok{, }\FloatTok{0.15}\NormalTok{, }\FloatTok{0.25}\NormalTok{, }\FloatTok{0.40}\NormalTok{, }\FloatTok{0.65}\NormalTok{)}
+\NormalTok{p3 }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{0.20}\NormalTok{, }\FloatTok{0.40}\NormalTok{, }\FloatTok{0.60}\NormalTok{, }\FloatTok{0.75}\NormalTok{, }\FloatTok{0.85}\NormalTok{, }\FloatTok{0.95}\NormalTok{)}
+\NormalTok{skeleton\_mat }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(p1, p2, p3)}
+
+\CommentTok{\# 当前各剂量已治疗的人数。}
+\NormalTok{n }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{9}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+
+\CommentTok{\# 各剂量累计的归一化评分；}
+\NormalTok{y }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2} \SpecialCharTok{/} \FloatTok{1.5}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{dose\_current }\OtherTok{\textless{}{-}} \DecValTok{5}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{skeleton\_mat}
+的每一行给出一条归一化平均毒性评分的初始参考曲线。例如，\texttt{p1{[}1{]}\ =\ 0.11}
+对应原始评分均值 0.165，患者评分先除以最大评分 1.5，再按剂量累加得到
+\texttt{y}：
+
+\[
+y_j = \sum_{i=1}^{n_j}\frac{s_{ij}}{s_{\max}}.
+\]
+
+例如，剂量 3 的三名患者评分都是 0.5，则
+\texttt{y{[}3{]}\ =\ (0.5\ +\ 0.5\ +\ 0.5)\ /\ 1.5\ =\ 1}。 函数内部将
+\texttt{target} 除以 \texttt{max(score)}，得到归一化目标约
+0.3133。因此，调用时传入原始目标 0.47，而 \texttt{y}
+应预先归一化并累加。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{observed }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{dose =} \FunctionTok{seq\_along}\NormalTok{(n),}
+  \AttributeTok{n =}\NormalTok{ n,}
+  \AttributeTok{y =}\NormalTok{ y,}
+  \AttributeTok{mean\_score =} \FunctionTok{ifelse}\NormalTok{(n }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{, y }\SpecialCharTok{*} \FunctionTok{max}\NormalTok{(score) }\SpecialCharTok{/}\NormalTok{ n, }\ConstantTok{NA\_real\_}\NormalTok{)}
+\NormalTok{)}
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(observed, }\AttributeTok{digits =} \DecValTok{3}\NormalTok{,}
+             \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"剂量"}\NormalTok{, }\StringTok{"人数"}\NormalTok{, }\StringTok{"归一化累计评分"}\NormalTok{, }\StringTok{"平均原始评分"}\NormalTok{),}
+             \AttributeTok{caption =} \StringTok{"当前数据：mean\_score 已还原为原始评分尺度"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrr@{}}
+\caption{当前数据：mean\_score 已还原为原始评分尺度}\tabularnewline
+\toprule\noalign{}
+剂量 & 人数 & 归一化累计评分 & 平均原始评分 \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+剂量 & 人数 & 归一化累计评分 & 平均原始评分 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 3 & 0.000 & 0.000 \\
+2 & 3 & 0.000 & 0.000 \\
+3 & 3 & 1.000 & 0.500 \\
+4 & 9 & 1.333 & 0.222 \\
+5 & 3 & 3.000 & 1.500 \\
+6 & 0 & 0.000 & --- \\
+\end{longtable}
+
+\textbf{修正变量名}
+
+在包中，\texttt{next\_RQ\_CRM()} 和 \texttt{select\_mtd\_RQ\_CRM()}
+的形参为 \texttt{skeleton}，函数体却引用
+\texttt{skeletons}。以下进行修改，后续以 \texttt{\_demo}
+后缀调用；已安装的包不作修改。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{next\_RQ\_CRM\_demo }\OtherTok{\textless{}{-}}\NormalTok{ UnifiedDoseFinding}\SpecialCharTok{::}\NormalTok{next\_RQ\_CRM}
+\FunctionTok{body}\NormalTok{(next\_RQ\_CRM\_demo) }\OtherTok{\textless{}{-}} \FunctionTok{bquote}\NormalTok{(\{}
+\NormalTok{  skeletons }\OtherTok{\textless{}{-}}\NormalTok{ skeleton}
+\NormalTok{  .(}\FunctionTok{body}\NormalTok{(next\_RQ\_CRM\_demo))}
+\NormalTok{\})}
+
+\NormalTok{select\_mtd\_RQ\_CRM\_demo }\OtherTok{\textless{}{-}}\NormalTok{ UnifiedDoseFinding}\SpecialCharTok{::}\NormalTok{select\_mtd\_RQ\_CRM}
+\FunctionTok{body}\NormalTok{(select\_mtd\_RQ\_CRM\_demo) }\OtherTok{\textless{}{-}} \FunctionTok{bquote}\NormalTok{(\{}
+\NormalTok{  skeletons }\OtherTok{\textless{}{-}}\NormalTok{ skeleton}
+\NormalTok{  .(}\FunctionTok{body}\NormalTok{(select\_mtd\_RQ\_CRM\_demo))}
+\NormalTok{\})}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{下一批剂量}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{next\_dose }\OtherTok{\textless{}{-}} \FunctionTok{next\_RQ\_CRM\_demo}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target, }\AttributeTok{n =}\NormalTok{ n, }\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{dose.curr =}\NormalTok{ dose\_current,}
+  \AttributeTok{score =}\NormalTok{ score, }\AttributeTok{skeleton =}\NormalTok{ skeleton\_mat, }\AttributeTok{mselection =} \DecValTok{1}
+\NormalTok{)}
+\NormalTok{next\_dose}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4
+\end{verbatim}
+
+\texttt{mselection\ =\ 1} 表示在多条 skeleton 之间做贝叶斯模型选择；
+设为 \texttt{0} 时使用模型平均。 \texttt{next\_dose}
+是模型推荐的下一批剂量编号。 若最低剂量过毒的后验概率超过
+\texttt{cutoff.eli}，此函数返回 \texttt{99} 表示停止；
+否则根据估计结果保持剂量或上、下调整一级。
+
+当前为第5剂量，下一批建议第4剂量。
+
+\textbf{最终选择}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{selected\_dose }\OtherTok{\textless{}{-}} \FunctionTok{select\_mtd\_RQ\_CRM\_demo}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target, }\AttributeTok{n =}\NormalTok{ n, }\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{score =}\NormalTok{ score,}
+  \AttributeTok{skeleton =}\NormalTok{ skeleton\_mat, }\AttributeTok{mselection =} \DecValTok{1}
+\NormalTok{)}
+\NormalTok{selected\_dose}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4
+\end{verbatim}
+
+此处复用当前数据，演示假定试验结束时的选择：第 4 剂量。\texttt{next}
+按当前剂量逐级调整，\texttt{select\_mtd} 选择估计均值最接近目标的剂量。
+
+\textbf{模拟试验}
+
+前两个函数使用已观察的数据。模拟还需要指定每个剂量下各毒性评分发生的真实概率。
+RQ-CRM 的 \texttt{ptox}
+矩阵按\textbf{行放评分等级、列放剂量}，每列概率之和为 1。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ptox }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(}
+  \FunctionTok{c}\NormalTok{(}\FloatTok{0.83}\NormalTok{, }\FloatTok{0.75}\NormalTok{, }\FloatTok{0.62}\NormalTok{, }\FloatTok{0.51}\NormalTok{, }\FloatTok{0.34}\NormalTok{, }\FloatTok{0.19}\NormalTok{),}
+  \FunctionTok{c}\NormalTok{(}\FloatTok{0.12}\NormalTok{, }\FloatTok{0.15}\NormalTok{, }\FloatTok{0.18}\NormalTok{, }\FloatTok{0.19}\NormalTok{, }\FloatTok{0.16}\NormalTok{, }\FloatTok{0.11}\NormalTok{),}
+  \FunctionTok{c}\NormalTok{(}\FloatTok{0.04}\NormalTok{, }\FloatTok{0.07}\NormalTok{, }\FloatTok{0.11}\NormalTok{, }\FloatTok{0.14}\NormalTok{, }\FloatTok{0.15}\NormalTok{, }\FloatTok{0.11}\NormalTok{),}
+  \FunctionTok{c}\NormalTok{(}\FloatTok{0.01}\NormalTok{, }\FloatTok{0.03}\NormalTok{, }\FloatTok{0.09}\NormalTok{, }\FloatTok{0.16}\NormalTok{, }\FloatTok{0.35}\NormalTok{, }\FloatTok{0.59}\NormalTok{)}
+\NormalTok{)}
+
+\NormalTok{true\_mean }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(score }\SpecialCharTok{\%*\%}\NormalTok{ ptox)}
+\NormalTok{true\_mtd }\OtherTok{\textless{}{-}} \FunctionTok{which.min}\NormalTok{(}\FunctionTok{abs}\NormalTok{(true\_mean }\SpecialCharTok{{-}}\NormalTok{ target))}
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{dose =} \FunctionTok{seq\_along}\NormalTok{(true\_mean), true\_mean),}
+             \AttributeTok{digits =} \DecValTok{3}\NormalTok{, }\AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"剂量"}\NormalTok{, }\StringTok{"真实平均评分"}\NormalTok{),}
+             \AttributeTok{caption =} \StringTok{"场景中的真实平均评分"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rr@{}}
+\caption{场景中的真实平均评分}\tabularnewline
+\toprule\noalign{}
+剂量 & 真实平均评分 \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+剂量 & 真实平均评分 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 0.115 \\
+2 & 0.190 \\
+3 & 0.335 \\
+4 & 0.475 \\
+5 & 0.755 \\
+6 & 1.050 \\
+\end{longtable}
+
+在这个场景下，按真实平均评分最接近目标定义的目标剂量是第 4 剂量。
+下面进行模拟试验。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ntrial\_demo }\OtherTok{\textless{}{-}} \DecValTok{20}
+\NormalTok{oc\_rq }\OtherTok{\textless{}{-}} \FunctionTok{get\_oc\_RQ\_CRM}\NormalTok{(}
+  \AttributeTok{ptox =}\NormalTok{ ptox, }\AttributeTok{skeletons =}\NormalTok{ skeleton\_mat,}
+  \AttributeTok{target =}\NormalTok{ target, }\AttributeTok{score =}\NormalTok{ score,}
+  \AttributeTok{cohortsize =} \DecValTok{3}\NormalTok{, }\AttributeTok{ncohort =} \DecValTok{10}\NormalTok{,}
+  \AttributeTok{n.earlystop =} \DecValTok{100}\NormalTok{, }\AttributeTok{start.dose =} \DecValTok{1}\NormalTok{,}
+  \AttributeTok{mselection =} \DecValTok{1}\NormalTok{, }\AttributeTok{cutoff.eli =} \FloatTok{0.9}\NormalTok{,}
+  \AttributeTok{ntrial =}\NormalTok{ ntrial\_demo, }\AttributeTok{seed =} \DecValTok{100}
+\NormalTok{)}
+
+\NormalTok{oc\_table }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{dose =} \FunctionTok{seq\_along}\NormalTok{(true\_mean),}
+  \AttributeTok{true\_mean =}\NormalTok{ true\_mean,}
+  \AttributeTok{selection\_percent =}\NormalTok{ oc\_rq}\SpecialCharTok{$}\NormalTok{selpercent,}
+  \AttributeTok{mean\_n =}\NormalTok{ oc\_rq}\SpecialCharTok{$}\NormalTok{nptsdose}
+\NormalTok{)}
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(oc\_table, }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+             \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"剂量"}\NormalTok{, }\StringTok{"真实平均评分"}\NormalTok{, }\StringTok{"选择百分比（\%）"}\NormalTok{, }\StringTok{"平均入组人数"}\NormalTok{),}
+             \AttributeTok{caption =} \StringTok{"RQ{-}CRM 的选择百分比与各剂量平均入组人数"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrr@{}}
+\caption{RQ-CRM 的选择百分比与各剂量平均入组人数}\tabularnewline
+\toprule\noalign{}
+剂量 & 真实平均评分 & 选择百分比（\%） & 平均入组人数 \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+剂量 & 真实平均评分 & 选择百分比（\%） & 平均入组人数 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 0.12 & 0 & 3.60 \\
+2 & 0.19 & 0 & 5.55 \\
+3 & 0.34 & 45 & 9.75 \\
+4 & 0.48 & 50 & 9.45 \\
+5 & 0.75 & 5 & 1.65 \\
+6 & 1.05 & 0 & 0.00 \\
+\end{longtable}
+
+\texttt{ncohort\ =\ 10}、\texttt{cohortsize\ =\ 3} 对应最多 30 名患者；
+\texttt{n.earlystop} 是单个剂量的累计入组人数阈值，此处设为
+100，使本例不会触发该规则。 \texttt{selpercent}
+的单位是百分比，\texttt{nptsdose} 是每个剂量平均纳入患者数。
+过毒停止可能使选择百分比之和小于 100\%。
+
+\texttt{selection\_percent} 对应 \texttt{selpercent}，\texttt{mean\_n}
+对应 \texttt{nptsdose}。下文结果表沿用这两个指标。
+
+\section{其他模型}\label{ux5176ux4ed6ux6a21ux578b}
+
+下面每种方法都按``整理输入 → 下一剂量 → 最终选择 → 模拟评价''展开。
+重点补充与 RQ-CRM 不同的数据形式和规则。
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+方法
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+主要差异
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Quasi-CRM & 使用单条 skeleton，与 RQ-CRM 共用函数 \\
+Quasi-BOIN & 使用归一化评分及同尺度目标；\texttt{p.true}
+每行一个剂量，需将本例 \texttt{ptox} 转置；最终选择的参数名是
+\texttt{npts}、\texttt{ntox} \\
+Ivanova（二元） & \texttt{y} 是各剂量的事件总数，\texttt{target}
+是目标事件概率，\texttt{eps} 控制升降剂量阈值 \\
+Ivanova（连续） & 决策函数使用逐剂量的个体结局列表
+\texttt{c\_resp}，保留估计标准差所需的信息 \\
+gBOIN（TB） & 输入毒性负担及其权重；模拟的 \texttt{pmat}
+是逐剂量概率矩阵组成的列表 \\
+gBOIN（连续） & 观察数据中的 \texttt{y} 是连续结局总和，模拟用
+\texttt{c\_true} 指定真实均值；本版源码按剂量编号 \texttt{d} 使用标准差
+\texttt{0.3\ *\ d} \\
+\end{longtable}
+}
+
+\section{Quasi-CRM}\label{quasi-crm}
+
+Quasi-CRM 与 RQ-CRM 共用三个函数，只需要将多条 skeleton 换为单条。
+这里继续使用前面的患者数据、评分和真实场景。
+
+\textbf{下一批剂量}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{next\_dose\_qcrm }\OtherTok{\textless{}{-}} \FunctionTok{next\_RQ\_CRM\_demo}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target, }\AttributeTok{n =}\NormalTok{ n, }\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{dose.curr =}\NormalTok{ dose\_current,}
+  \AttributeTok{score =}\NormalTok{ score, }\AttributeTok{skeleton =}\NormalTok{ p1}
+\NormalTok{)}
+\NormalTok{next\_dose\_qcrm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4
+\end{verbatim}
+
+当前为第5剂量，下一批建议第4剂量。
+
+\textbf{最终选择}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{selected\_dose\_qcrm }\OtherTok{\textless{}{-}} \FunctionTok{select\_mtd\_RQ\_CRM\_demo}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target, }\AttributeTok{n =}\NormalTok{ n, }\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{score =}\NormalTok{ score, }\AttributeTok{skeleton =}\NormalTok{ p1}
+\NormalTok{)}
+\NormalTok{selected\_dose\_qcrm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4
+\end{verbatim}
+
+\textbf{模拟试验}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{oc\_qcrm }\OtherTok{\textless{}{-}} \FunctionTok{get\_oc\_RQ\_CRM}\NormalTok{(}
+  \AttributeTok{ptox =}\NormalTok{ ptox, }\AttributeTok{skeletons =}\NormalTok{ p1,}
+  \AttributeTok{target =}\NormalTok{ target, }\AttributeTok{score =}\NormalTok{ score,}
+  \AttributeTok{cohortsize =} \DecValTok{3}\NormalTok{, }\AttributeTok{ncohort =} \DecValTok{10}\NormalTok{,}
+  \AttributeTok{n.earlystop =} \DecValTok{100}\NormalTok{, }\AttributeTok{start.dose =} \DecValTok{1}\NormalTok{,}
+  \AttributeTok{cutoff.eli =} \FloatTok{0.9}\NormalTok{, }\AttributeTok{ntrial =}\NormalTok{ ntrial\_demo, }\AttributeTok{seed =} \DecValTok{100}
+\NormalTok{)}
+
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{dose =} \FunctionTok{seq\_along}\NormalTok{(true\_mean),}
+  \AttributeTok{true\_mean =}\NormalTok{ true\_mean,}
+  \AttributeTok{selection\_percent =}\NormalTok{ oc\_qcrm}\SpecialCharTok{$}\NormalTok{selpercent,}
+  \AttributeTok{mean\_n =}\NormalTok{ oc\_qcrm}\SpecialCharTok{$}\NormalTok{nptsdose}
+\NormalTok{), }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+   \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"剂量"}\NormalTok{, }\StringTok{"真实均值"}\NormalTok{, }\StringTok{"选择百分比（\%）"}\NormalTok{, }\StringTok{"平均入组人数"}\NormalTok{),}
+   \AttributeTok{caption =} \StringTok{"Quasi{-}CRM 的模拟结果"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrr@{}}
+\caption{Quasi-CRM 的模拟结果}\tabularnewline
+\toprule\noalign{}
+剂量 & 真实均值 & 选择百分比（\%） & 平均入组人数 \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+剂量 & 真实均值 & 选择百分比（\%） & 平均入组人数 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 0.12 & 0 & 3.60 \\
+2 & 0.19 & 0 & 6.00 \\
+3 & 0.34 & 50 & 10.65 \\
+4 & 0.48 & 50 & 9.30 \\
+5 & 0.75 & 0 & 0.45 \\
+6 & 1.05 & 0 & 0.00 \\
+\end{longtable}
+
+\section{Quasi-BOIN}\label{quasi-boin}
+
+\textbf{准备数据}
+
+Quasi-BOIN 使用归一化评分。与前面的 RQ-CRM
+不同，这里的目标也要在调用前归一化。 \texttt{y}
+已经是归一化评分的累计值，可以直接沿用。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{target\_qb }\OtherTok{\textless{}{-}}\NormalTok{ target }\SpecialCharTok{/} \FunctionTok{max}\NormalTok{(score)}
+\NormalTok{score\_qb }\OtherTok{\textless{}{-}}\NormalTok{ score }\SpecialCharTok{/} \FunctionTok{max}\NormalTok{(score)}
+\NormalTok{n\_qb }\OtherTok{\textless{}{-}}\NormalTok{ n}
+\NormalTok{y\_qb }\OtherTok{\textless{}{-}}\NormalTok{ y}
+\NormalTok{d\_qb }\OtherTok{\textless{}{-}}\NormalTok{ dose\_current}
+\end{Highlighting}
+\end{Shaded}
+
+这里的 \texttt{target\_qb} 是目标平均归一化评分，不是 DLT 发生率。
+
+\textbf{下一批剂量}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{next\_dose\_qb }\OtherTok{\textless{}{-}} \FunctionTok{next\_QuasiBOIN}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_qb, }\AttributeTok{n =}\NormalTok{ n\_qb, }\AttributeTok{y =}\NormalTok{ y\_qb, }\AttributeTok{d =}\NormalTok{ d\_qb,}
+  \AttributeTok{p.saf =} \FloatTok{0.6} \SpecialCharTok{*}\NormalTok{ target\_qb, }\AttributeTok{p.tox =} \FloatTok{1.4} \SpecialCharTok{*}\NormalTok{ target\_qb,}
+  \AttributeTok{cutoff.eli =} \FloatTok{0.95}\NormalTok{, }\AttributeTok{extrasafe =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{n.earlystop =} \DecValTok{100}
+\NormalTok{)}
+\NormalTok{next\_dose\_qb}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{next\_dose\_qb }\OtherTok{\textless{}{-}} \FunctionTok{next\_QuasiBOIN}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_qb, }\AttributeTok{n =}\NormalTok{ n\_qb, }\AttributeTok{y =}\NormalTok{ y\_qb, }\AttributeTok{d =}\NormalTok{ d\_qb,}
+  \AttributeTok{p.saf =} \FloatTok{0.6} \SpecialCharTok{*}\NormalTok{ target\_qb, }\AttributeTok{p.tox =} \FloatTok{1.4} \SpecialCharTok{*}\NormalTok{ target\_qb,}
+  \AttributeTok{cutoff.eli =} \FloatTok{0.95}\NormalTok{, }\AttributeTok{extrasafe =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{n.earlystop =} \DecValTok{100}
+\NormalTok{)}
+\NormalTok{next\_dose\_qb}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4
+\end{verbatim}
+
+\texttt{p.saf} 和 \texttt{p.tox}
+分别指定偏低、偏高的参考评分，函数据此计算升降剂量边界。本文使用
+\texttt{extrasafe\ =\ FALSE}；本版 \texttt{next\_QuasiBOIN()}
+的额外安全分支引用了未在形参中定义的
+\texttt{offset}，开启该分支前需修正实现。
+返回剂量编号；若触发最低剂量过毒的停止规则，则返回 \texttt{99}。
+
+\textbf{最终选择}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{selected\_dose\_qb }\OtherTok{\textless{}{-}} \FunctionTok{select\_mtd\_QuasiBOIN}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_qb, }\AttributeTok{npts =}\NormalTok{ n\_qb, }\AttributeTok{ntox =}\NormalTok{ y\_qb,}
+  \AttributeTok{cutoff.eli =} \FloatTok{0.95}\NormalTok{, }\AttributeTok{extrasafe =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{print =} \ConstantTok{FALSE}
+\NormalTok{)}
+\NormalTok{selected\_dose\_qb}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4
+\end{verbatim}
+
+这里人数的参数名是 \texttt{npts}，累计评分的参数名是 \texttt{ntox}。
+\texttt{print\ =\ FALSE} 时返回选择的剂量编号，\texttt{99}
+表示不推荐剂量。
+
+\textbf{模拟试验}
+
+\texttt{p.true} 每行一个剂量、每列一个评分等级，需要将前面的
+\texttt{ptox} 转置。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p\_true\_qb }\OtherTok{\textless{}{-}} \FunctionTok{t}\NormalTok{(ptox)}
+\NormalTok{true\_mean\_qb }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(p\_true\_qb }\SpecialCharTok{\%*\%}\NormalTok{ score\_qb)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{oc\_qb }\OtherTok{\textless{}{-}} \FunctionTok{get\_oc\_QuasiBOIN}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_qb, }\AttributeTok{p.true =}\NormalTok{ p\_true\_qb, }\AttributeTok{score =}\NormalTok{ score\_qb,}
+  \AttributeTok{ncohort =} \DecValTok{10}\NormalTok{, }\AttributeTok{cohortsize =} \DecValTok{3}\NormalTok{,}
+  \AttributeTok{n.earlystop =} \DecValTok{100}\NormalTok{, }\AttributeTok{startdose =} \DecValTok{1}\NormalTok{,}
+  \AttributeTok{p.saf =} \FloatTok{0.6} \SpecialCharTok{*}\NormalTok{ target\_qb, }\AttributeTok{p.tox =} \FloatTok{1.4} \SpecialCharTok{*}\NormalTok{ target\_qb,}
+  \AttributeTok{cutoff.eli =} \FloatTok{0.95}\NormalTok{, }\AttributeTok{extrasafe =} \ConstantTok{FALSE}\NormalTok{,}
+  \AttributeTok{ntrial =}\NormalTok{ ntrial\_demo, }\AttributeTok{seed =} \DecValTok{100}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{dose =} \FunctionTok{seq\_along}\NormalTok{(true\_mean\_qb),}
+  \AttributeTok{true\_mean =}\NormalTok{ true\_mean\_qb,}
+  \AttributeTok{selection\_percent =}\NormalTok{ oc\_qb}\SpecialCharTok{$}\NormalTok{selpercent,}
+  \AttributeTok{mean\_n =}\NormalTok{ oc\_qb}\SpecialCharTok{$}\NormalTok{nptsdose}
+\NormalTok{), }\AttributeTok{digits =} \DecValTok{3}\NormalTok{,}
+   \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"剂量"}\NormalTok{, }\StringTok{"真实均值"}\NormalTok{, }\StringTok{"选择百分比（\%）"}\NormalTok{, }\StringTok{"平均入组人数"}\NormalTok{),}
+   \AttributeTok{caption =} \StringTok{"Quasi{-}BOIN 的模拟结果（均值为归一化评分）"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrr@{}}
+\caption{Quasi-BOIN 的模拟结果（均值为归一化评分）}\tabularnewline
+\toprule\noalign{}
+剂量 & 真实均值 & 选择百分比（\%） & 平均入组人数 \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+剂量 & 真实均值 & 选择百分比（\%） & 平均入组人数 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 0.077 & 0 & 3.75 \\
+2 & 0.127 & 5 & 4.95 \\
+3 & 0.223 & 30 & 9.75 \\
+4 & 0.317 & 55 & 9.00 \\
+5 & 0.503 & 10 & 2.25 \\
+6 & 0.700 & 0 & 0.30 \\
+\end{longtable}
+
+\section{Ivanova}\label{ivanova}
+
+Ivanova unified design
+使用当前剂量下的标准化统计量进行升降决策；试验结束时通过保序估计选择接近目标的剂量。\hyperref[ux53c2ux8003ux8d44ux6599]{Ivanova
+与 Kim（2009）}
+
+\subsection{二元结局}\label{ux4e8cux5143ux7ed3ux5c40}
+
+\textbf{准备数据}
+
+二元结局下，每名患者只有发生或未发生 DLT 两种情况。 此时 \texttt{y} 是
+DLT 人数，\texttt{target} 才是目标 DLT 发生率。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{target\_ib }\OtherTok{\textless{}{-}} \FloatTok{0.3}
+\NormalTok{eps\_ib }\OtherTok{\textless{}{-}} \DecValTok{1}
+\NormalTok{n\_ib }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{15}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{y\_ib }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{4}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{d\_ib }\OtherTok{\textless{}{-}} \DecValTok{2}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{下一批剂量}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{next\_dose\_ib }\OtherTok{\textless{}{-}} \FunctionTok{next\_Ivanova\_binary}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_ib, }\AttributeTok{eps =}\NormalTok{ eps\_ib, }\AttributeTok{y =}\NormalTok{ y\_ib, }\AttributeTok{n =}\NormalTok{ n\_ib, }\AttributeTok{d =}\NormalTok{ d\_ib}
+\NormalTok{)}
+\NormalTok{next\_dose\_ib}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2
+\end{verbatim}
+
+\texttt{eps} 控制升降剂量的判断阈值。函数计算当前剂量的标准化统计量，
+低于 \texttt{-eps} 时升一级，高于 \texttt{eps}
+时降一级，其余情况保持当前剂量。
+
+\textbf{最终选择}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{selected\_ib }\OtherTok{\textless{}{-}} \FunctionTok{select\_mtd\_Ivanova\_binary}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_ib, }\AttributeTok{y =}\NormalTok{ y\_ib, }\AttributeTok{n =}\NormalTok{ n\_ib}
+\NormalTok{)}
+\NormalTok{selected\_ib}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $dselect
+## [1] 2
+## 
+## $n
+## [1]  3 15  0  0  0  0
+\end{verbatim}
+
+这里返回的是列表，\texttt{selected\_ib\$dselect}
+是最终剂量编号，\texttt{selected\_ib\$n} 是各剂量人数。
+
+\textbf{模拟试验}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{truetox\_ib }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{0.05}\NormalTok{, }\FloatTok{0.10}\NormalTok{, }\FloatTok{0.20}\NormalTok{, }\FloatTok{0.30}\NormalTok{, }\FloatTok{0.45}\NormalTok{, }\FloatTok{0.60}\NormalTok{)}
+
+\NormalTok{oc\_ib }\OtherTok{\textless{}{-}} \FunctionTok{get\_oc\_Ivanova\_binary}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_ib, }\AttributeTok{eps =}\NormalTok{ eps\_ib, }\AttributeTok{truetox =}\NormalTok{ truetox\_ib,}
+  \AttributeTok{ncohort =} \DecValTok{10}\NormalTok{, }\AttributeTok{cohortsize =} \DecValTok{3}\NormalTok{, }\AttributeTok{n.earlystop =} \DecValTok{100}\NormalTok{,}
+  \AttributeTok{ntrial =}\NormalTok{ ntrial\_demo, }\AttributeTok{startdose =} \DecValTok{1}\NormalTok{, }\AttributeTok{seed =} \DecValTok{100}
+\NormalTok{)}
+
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{dose =} \FunctionTok{seq\_along}\NormalTok{(truetox\_ib),}
+  \AttributeTok{true\_dlt\_rate =}\NormalTok{ truetox\_ib,}
+  \AttributeTok{selection\_percent =}\NormalTok{ oc\_ib}\SpecialCharTok{$}\NormalTok{selpercent,}
+  \AttributeTok{mean\_n =}\NormalTok{ oc\_ib}\SpecialCharTok{$}\NormalTok{nptsdose}
+\NormalTok{), }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+   \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"剂量"}\NormalTok{, }\StringTok{"真实 DLT 率"}\NormalTok{, }\StringTok{"选择百分比（\%）"}\NormalTok{, }\StringTok{"平均入组人数"}\NormalTok{),}
+   \AttributeTok{caption =} \StringTok{"Ivanova 二元结局的模拟结果"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrr@{}}
+\caption{Ivanova 二元结局的模拟结果}\tabularnewline
+\toprule\noalign{}
+剂量 & 真实 DLT 率 & 选择百分比（\%） & 平均入组人数 \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+剂量 & 真实 DLT 率 & 选择百分比（\%） & 平均入组人数 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 0.05 & 0 & 4.05 \\
+2 & 0.10 & 0 & 7.05 \\
+3 & 0.20 & 45 & 11.10 \\
+4 & 0.30 & 45 & 5.85 \\
+5 & 0.45 & 10 & 1.65 \\
+6 & 0.60 & 0 & 0.30 \\
+\end{longtable}
+
+\texttt{truetox\_ib} 指定各剂量下真实的 DLT 发生率，函数按二项分布生成
+DLT 人数。
+
+\subsection{连续结局}\label{ux8fdeux7eedux7ed3ux5c40}
+
+\textbf{准备数据}
+
+连续结局需要保留每名患者的观测值，因为下一剂量决策还要计算标准差。
+\texttt{c\_resp} 是一个列表，每个元素存放一个剂量下的全部观测值。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{target\_ic }\OtherTok{\textless{}{-}} \FloatTok{1.47}
+\NormalTok{eps\_ic }\OtherTok{\textless{}{-}} \DecValTok{1}
+\NormalTok{c\_resp\_ic }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}
+  \FunctionTok{c}\NormalTok{(}\FloatTok{0.05}\NormalTok{, }\FloatTok{0.12}\NormalTok{, }\FloatTok{0.10}\NormalTok{),}
+  \FunctionTok{c}\NormalTok{(}\FloatTok{0.47}\NormalTok{, }\FloatTok{0.28}\NormalTok{, }\FloatTok{0.33}\NormalTok{),}
+  \FunctionTok{c}\NormalTok{(}\FloatTok{0.39}\NormalTok{, }\FloatTok{1.61}\NormalTok{, }\FloatTok{0.16}\NormalTok{),}
+  \FunctionTok{c}\NormalTok{(}\FloatTok{0.94}\NormalTok{, }\FloatTok{1.60}\NormalTok{, }\FloatTok{1.61}\NormalTok{, }\FloatTok{1.17}\NormalTok{, }\FloatTok{2.56}\NormalTok{, }\FloatTok{1.65}\NormalTok{, }\FloatTok{1.43}\NormalTok{, }\FloatTok{0.90}\NormalTok{, }\FloatTok{2.22}\NormalTok{),}
+  \FunctionTok{numeric}\NormalTok{(}\DecValTok{0}\NormalTok{),}
+  \FunctionTok{numeric}\NormalTok{(}\DecValTok{0}\NormalTok{)}
+\NormalTok{)}
+\NormalTok{n\_ic }\OtherTok{\textless{}{-}} \FunctionTok{lengths}\NormalTok{(c\_resp\_ic)}
+\NormalTok{d\_ic }\OtherTok{\textless{}{-}} \DecValTok{4}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{numeric(0)} 表示该剂量还没有观测值；\texttt{lengths()}
+统计各元素长度，得到各剂量人数。
+
+\textbf{下一批剂量}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{next\_dose\_ic }\OtherTok{\textless{}{-}} \FunctionTok{next\_Ivanova\_continuous}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_ic, }\AttributeTok{eps =}\NormalTok{ eps\_ic,}
+  \AttributeTok{c\_resp =}\NormalTok{ c\_resp\_ic, }\AttributeTok{n =}\NormalTok{ n\_ic, }\AttributeTok{d =}\NormalTok{ d\_ic}
+\NormalTok{)}
+\NormalTok{next\_dose\_ic}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4
+\end{verbatim}
+
+\textbf{最终选择}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{selected\_ic }\OtherTok{\textless{}{-}} \FunctionTok{select\_mtd\_Ivanova\_continuous}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_ic, }\AttributeTok{c\_resp =}\NormalTok{ c\_resp\_ic, }\AttributeTok{n =}\NormalTok{ n\_ic}
+\NormalTok{)}
+\NormalTok{selected\_ic}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $dselect
+## [1] 4
+## 
+## $n
+## [1] 3 3 3 9 0 0
+\end{verbatim}
+
+最终剂量编号在 \texttt{selected\_ic\$dselect} 中。
+
+\textbf{模拟试验}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ptox\_ic }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{0.11}\NormalTok{, }\FloatTok{0.25}\NormalTok{, }\FloatTok{0.94}\NormalTok{, }\FloatTok{1.47}\NormalTok{, }\FloatTok{2.38}\NormalTok{, }\FloatTok{2.40}\NormalTok{)}
+
+\NormalTok{oc\_ic }\OtherTok{\textless{}{-}} \FunctionTok{get\_oc\_Ivanova\_continuous}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_ic, }\AttributeTok{eps =}\NormalTok{ eps\_ic, }\AttributeTok{ptox =}\NormalTok{ ptox\_ic,}
+  \AttributeTok{ncohort =} \DecValTok{10}\NormalTok{, }\AttributeTok{cohortsize =} \DecValTok{3}\NormalTok{, }\AttributeTok{n.earlystop =} \DecValTok{100}\NormalTok{,}
+  \AttributeTok{ntrial =}\NormalTok{ ntrial\_demo, }\AttributeTok{startdose =} \DecValTok{1}\NormalTok{, }\AttributeTok{seed =} \DecValTok{100}
+\NormalTok{)}
+
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{dose =} \FunctionTok{seq\_along}\NormalTok{(ptox\_ic),}
+  \AttributeTok{true\_mean =}\NormalTok{ ptox\_ic,}
+  \AttributeTok{selection\_percent =}\NormalTok{ oc\_ic}\SpecialCharTok{$}\NormalTok{selpercent,}
+  \AttributeTok{mean\_n =}\NormalTok{ oc\_ic}\SpecialCharTok{$}\NormalTok{nptsdose}
+\NormalTok{), }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+   \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"剂量"}\NormalTok{, }\StringTok{"真实均值"}\NormalTok{, }\StringTok{"选择百分比（\%）"}\NormalTok{, }\StringTok{"平均入组人数"}\NormalTok{),}
+   \AttributeTok{caption =} \StringTok{"Ivanova 连续结局的模拟结果"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrr@{}}
+\caption{Ivanova 连续结局的模拟结果}\tabularnewline
+\toprule\noalign{}
+剂量 & 真实均值 & 选择百分比（\%） & 平均入组人数 \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+剂量 & 真实均值 & 选择百分比（\%） & 平均入组人数 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 0.11 & 0 & 3.0 \\
+2 & 0.25 & 0 & 3.0 \\
+3 & 0.94 & 0 & 4.8 \\
+4 & 1.47 & 95 & 16.2 \\
+5 & 2.38 & 5 & 3.0 \\
+6 & 2.40 & 0 & 0.0 \\
+\end{longtable}
+
+这里的 \texttt{ptox} 指真实连续结局均值，不是发生概率。
+本版模拟函数按正态分布生成结局，标准差设为均值的绝对值，因此模拟值可能为负数。
+
+\section{gBOIN}\label{gboin}
+
+gBOIN
+将观测均值与预设决策边界比较，给出升、降或维持剂量的决策。以下分别演示毒性负担和连续结局。\hyperref[ux53c2ux8003ux8d44ux6599]{Mu
+等（2019）}
+
+\subsection{毒性负担（TB）}\label{ux6bd2ux6027ux8d1fux62c5tb}
+
+\textbf{准备数据}
+
+TB 指 toxicity burden，即毒性负担。同一名患者可能有多种毒性，
+将各类毒性对应的权重加起来，得到这名患者的 TB。
+下面使用帮助文档中的权重，并取前六个剂量演示。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{target\_tb }\OtherTok{\textless{}{-}} \FloatTok{3.344}
+\NormalTok{n\_tb }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{9}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{y\_tb }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{5.5}\NormalTok{, }\FloatTok{26.95}\NormalTok{, }\FloatTok{25.3}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{d\_tb }\OtherTok{\textless{}{-}} \DecValTok{2}
+
+\CommentTok{\# 行对应毒性类型，列对应该类型的等级。}
+\NormalTok{weight\_tb }\OtherTok{\textless{}{-}} \FloatTok{1.1} \SpecialCharTok{*} \FunctionTok{rbind}\NormalTok{(}
+  \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\FloatTok{1.5}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{6}\NormalTok{),}
+  \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{2.5}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+  \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+  \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.5}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+  \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{y\_tb} 是各剂量下所有患者 TB 的累计值，\texttt{y\_tb\ /\ n\_tb}
+才是平均 TB。 这里使用原始 TB 尺度，不需要除以最大权重。
+
+\textbf{下一批剂量}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{next\_dose\_tb }\OtherTok{\textless{}{-}} \FunctionTok{next\_gBOIN\_TB}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_tb, }\AttributeTok{n =}\NormalTok{ n\_tb, }\AttributeTok{y =}\NormalTok{ y\_tb, }\AttributeTok{d =}\NormalTok{ d\_tb,}
+  \AttributeTok{mu\_1 =} \FloatTok{0.6} \SpecialCharTok{*}\NormalTok{ target\_tb, }\AttributeTok{mu\_2 =} \FloatTok{1.4} \SpecialCharTok{*}\NormalTok{ target\_tb}
+\NormalTok{)}
+\NormalTok{next\_dose\_tb}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2
+\end{verbatim}
+
+函数将当前剂量的平均 TB 与两个边界比较：不高于
+\texttt{(target\ +\ mu\_1)\ /\ 2} 时升一级，不低于
+\texttt{(target\ +\ mu\_2)\ /\ 2}
+时降一级；在最高、最低剂量处不越界。当前均值为 2.994，下一批推荐第 2
+剂量。
+
+\textbf{最终选择}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{selected\_dose\_tb }\OtherTok{\textless{}{-}} \FunctionTok{select\_mtd\_gBOIN\_TB}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_tb, }\AttributeTok{npts =}\NormalTok{ n\_tb, }\AttributeTok{ntox =}\NormalTok{ y\_tb}
+\NormalTok{)}
+\NormalTok{selected\_dose\_tb}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2
+\end{verbatim}
+
+\textbf{模拟试验}
+
+\texttt{pmat} 是一个列表，每个元素对应一个剂量。 元素中的矩阵与
+\texttt{weight\_tb} 对齐：行是毒性类型，列是等级，每行概率之和为 1。
+本版源码固定模拟五种毒性，下面因此保留五行。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pmat\_tb }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}
+  \FunctionTok{rbind}\NormalTok{(}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{  ),}
+  \FunctionTok{rbind}\NormalTok{(}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.46}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.54}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{  ),}
+  \FunctionTok{rbind}\NormalTok{(}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.4}\NormalTok{, }\FloatTok{0.6}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.25}\NormalTok{, }\FloatTok{0.75}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{  ),}
+  \FunctionTok{rbind}\NormalTok{(}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.4}\NormalTok{, }\FloatTok{0.6}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.25}\NormalTok{, }\FloatTok{0.75}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{  ),}
+  \FunctionTok{rbind}\NormalTok{(}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.25}\NormalTok{, }\FloatTok{0.75}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{  ),}
+  \FunctionTok{rbind}\NormalTok{(}
+    \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{  )}
+\NormalTok{)}
+
+\NormalTok{true\_mean\_tb }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(pmat\_tb, }\ControlFlowTok{function}\NormalTok{(p) }\FunctionTok{sum}\NormalTok{(p }\SpecialCharTok{*}\NormalTok{ weight\_tb))}
+\end{Highlighting}
+\end{Shaded}
+
+例如第一剂量的第一种毒性，有 50\% 的概率取第一个等级，另 50\%
+取第二个等级。 真实平均 TB
+可用各等级概率乘以对应权重，再对全部毒性类型求和。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{oc\_tb }\OtherTok{\textless{}{-}} \FunctionTok{get\_oc\_gBOIN\_TB}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_tb, }\AttributeTok{pmat =}\NormalTok{ pmat\_tb, }\AttributeTok{weight =}\NormalTok{ weight\_tb,}
+  \AttributeTok{ncohort =} \DecValTok{10}\NormalTok{, }\AttributeTok{cohortsize =} \DecValTok{3}\NormalTok{, }\AttributeTok{n.earlystop =} \DecValTok{100}\NormalTok{,}
+  \AttributeTok{ntrial =}\NormalTok{ ntrial\_demo,}
+  \AttributeTok{mu\_1 =} \FloatTok{0.6} \SpecialCharTok{*}\NormalTok{ target\_tb, }\AttributeTok{mu\_2 =} \FloatTok{1.4} \SpecialCharTok{*}\NormalTok{ target\_tb,}
+  \AttributeTok{startdose =} \DecValTok{1}\NormalTok{, }\AttributeTok{seed =} \DecValTok{100}
+\NormalTok{)}
+
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{dose =} \FunctionTok{seq\_along}\NormalTok{(true\_mean\_tb),}
+  \AttributeTok{true\_mean =}\NormalTok{ true\_mean\_tb,}
+  \AttributeTok{selection\_percent =}\NormalTok{ oc\_tb}\SpecialCharTok{$}\NormalTok{selpercent,}
+  \AttributeTok{mean\_n =}\NormalTok{ oc\_tb}\SpecialCharTok{$}\NormalTok{nptsdose}
+\NormalTok{), }\AttributeTok{digits =} \DecValTok{3}\NormalTok{,}
+   \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"剂量"}\NormalTok{, }\StringTok{"真实均值"}\NormalTok{, }\StringTok{"选择百分比（\%）"}\NormalTok{, }\StringTok{"平均入组人数"}\NormalTok{),}
+   \AttributeTok{caption =} \StringTok{"gBOIN 毒性负担的模拟结果"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrr@{}}
+\caption{gBOIN 毒性负担的模拟结果}\tabularnewline
+\toprule\noalign{}
+剂量 & 真实均值 & 选择百分比（\%） & 平均入组人数 \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+剂量 & 真实均值 & 选择百分比（\%） & 平均入组人数 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 1.100 & 0 & 4.65 \\
+2 & 3.344 & 100 & 23.40 \\
+3 & 4.950 & 0 & 1.95 \\
+4 & 5.500 & 0 & 0.00 \\
+5 & 6.600 & 0 & 0.00 \\
+6 & 7.700 & 0 & 0.00 \\
+\end{longtable}
+
+\subsection{连续结局}\label{ux8fdeux7eedux7ed3ux5c40-1}
+
+\textbf{准备数据}
+
+这里沿用 Ivanova 连续结局的患者数据。 gBOIN
+的决策只需要各剂量的人数和结局总和，不需要传入个体观测列表。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{target\_gc }\OtherTok{\textless{}{-}}\NormalTok{ target\_ic}
+\NormalTok{n\_gc }\OtherTok{\textless{}{-}}\NormalTok{ n\_ic}
+\NormalTok{y\_gc }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(c\_resp\_ic, sum)}
+\NormalTok{d\_gc }\OtherTok{\textless{}{-}}\NormalTok{ d\_ic}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{下一批剂量}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{next\_dose\_gc }\OtherTok{\textless{}{-}} \FunctionTok{next\_gBOIN\_continuous}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_gc, }\AttributeTok{n =}\NormalTok{ n\_gc, }\AttributeTok{y =}\NormalTok{ y\_gc, }\AttributeTok{d =}\NormalTok{ d\_gc,}
+  \AttributeTok{mu\_1 =} \FloatTok{0.6} \SpecialCharTok{*}\NormalTok{ target\_gc, }\AttributeTok{mu\_2 =} \FloatTok{1.4} \SpecialCharTok{*}\NormalTok{ target\_gc}
+\NormalTok{)}
+\NormalTok{next\_dose\_gc}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4
+\end{verbatim}
+
+\textbf{最终选择}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{selected\_dose\_gc }\OtherTok{\textless{}{-}} \FunctionTok{select\_mtd\_gBOIN\_continuous}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_gc, }\AttributeTok{npts =}\NormalTok{ n\_gc, }\AttributeTok{ntox =}\NormalTok{ y\_gc}
+\NormalTok{)}
+\NormalTok{selected\_dose\_gc}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4
+\end{verbatim}
+
+\textbf{模拟试验}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{c\_true\_gc }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{0.11}\NormalTok{, }\FloatTok{0.25}\NormalTok{, }\FloatTok{0.94}\NormalTok{, }\FloatTok{1.47}\NormalTok{, }\FloatTok{2.38}\NormalTok{, }\FloatTok{2.40}\NormalTok{)}
+
+\NormalTok{oc\_gc }\OtherTok{\textless{}{-}} \FunctionTok{get\_oc\_gBOIN\_continuous}\NormalTok{(}
+  \AttributeTok{target =}\NormalTok{ target\_gc, }\AttributeTok{c\_true =}\NormalTok{ c\_true\_gc,}
+  \AttributeTok{ncohort =} \DecValTok{10}\NormalTok{, }\AttributeTok{cohortsize =} \DecValTok{3}\NormalTok{, }\AttributeTok{n.earlystop =} \DecValTok{100}\NormalTok{,}
+  \AttributeTok{ntrial =}\NormalTok{ ntrial\_demo,}
+  \AttributeTok{mu\_1 =} \FloatTok{0.6} \SpecialCharTok{*}\NormalTok{ target\_gc, }\AttributeTok{mu\_2 =} \FloatTok{1.4} \SpecialCharTok{*}\NormalTok{ target\_gc,}
+  \AttributeTok{startdose =} \DecValTok{1}\NormalTok{, }\AttributeTok{seed =} \DecValTok{100}
+\NormalTok{)}
+
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{dose =} \FunctionTok{seq\_along}\NormalTok{(c\_true\_gc),}
+  \AttributeTok{true\_mean =}\NormalTok{ c\_true\_gc,}
+  \AttributeTok{selection\_percent =}\NormalTok{ oc\_gc}\SpecialCharTok{$}\NormalTok{selpercent,}
+  \AttributeTok{mean\_n =}\NormalTok{ oc\_gc}\SpecialCharTok{$}\NormalTok{nptsdose}
+\NormalTok{), }\AttributeTok{digits =} \DecValTok{2}\NormalTok{,}
+   \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"剂量"}\NormalTok{, }\StringTok{"真实均值"}\NormalTok{, }\StringTok{"选择百分比（\%）"}\NormalTok{, }\StringTok{"平均入组人数"}\NormalTok{),}
+   \AttributeTok{caption =} \StringTok{"gBOIN 连续结局的模拟结果"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rrrr@{}}
+\caption{gBOIN 连续结局的模拟结果}\tabularnewline
+\toprule\noalign{}
+剂量 & 真实均值 & 选择百分比（\%） & 平均入组人数 \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+剂量 & 真实均值 & 选择百分比（\%） & 平均入组人数 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 0.11 & 0 & 3.00 \\
+2 & 0.25 & 0 & 3.00 \\
+3 & 0.94 & 0 & 5.10 \\
+4 & 1.47 & 100 & 15.15 \\
+5 & 2.38 & 0 & 3.75 \\
+6 & 2.40 & 0 & 0.00 \\
+\end{longtable}
+
+\texttt{c\_true} 指定各剂量的真实均值。本版源码使用正态分布生成结局， 第
+\texttt{d} 剂量的标准差为 \texttt{0.3\ *\ d}，与 Ivanova
+连续模拟函数的设定不同。
+
+\section{参考资料}\label{ux53c2ux8003ux8d44ux6599}
+
+\textbf{包与实现}
+
+\begin{itemize}
+\tightlist
+\item
+  \href{https://cran.r-project.org/package=UnifiedDoseFinding}{CRAN：UnifiedDoseFinding}
+  与
+  \href{https://github.com/cran/UnifiedDoseFinding}{源码镜像}。本文参数说明、返回值及版本问题依据本机
+  0.1.10 帮助文档和实现核对。
+\item
+  \href{https://deepwiki.com/cran/UnifiedDoseFinding}{DeepWiki：UnifiedDoseFinding}，作为补充阅读入口。
+\end{itemize}
+
+\textbf{方法文献}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Yuan Z, Chappell R, Bailey H. The continual reassessment method for
+  multiple toxicity grades: a Bayesian quasi-likelihood approach.
+  \emph{Biometrics}, 2007, 63: 173--179.
+  \href{https://doi.org/10.1111/j.1541-0420.2006.00666.x}{DOI}
+\item
+  Pan H, et al.~The continual reassessment method for multiple toxicity
+  grades: a Bayesian model selection approach. \emph{PLOS ONE}, 2014, 9:
+  e98147. \href{https://doi.org/10.1371/journal.pone.0098147}{DOI}
+\item
+  Ivanova A, Kim SH. Dose finding for continuous and ordinal outcomes
+  with a monotone objective function: a unified approach.
+  \emph{Biometrics}, 2009, 65: 307--315.
+  \href{https://doi.org/10.1111/j.1541-0420.2008.01045.x}{DOI}
+\item
+  Mu R, Yuan Y, Xu J, Mandrekar SJ, Yin J. gBOIN: a unified
+  model-assisted phase I trial design accounting for toxicity grades,
+  and binary or continuous end points. \emph{Journal of the Royal
+  Statistical Society: Series C}, 2019, 68: 289--308.
+  \href{https://doi.org/10.1111/rssc.12263}{DOI}
+\end{enumerate}
+
+\section{运行环境}\label{ux8fd0ux884cux73afux5883}
+
+各节按文档顺序执行，后续示例复用前文对象。模拟统一使用随机种子
+100、每队列 3 人、最多 10 个队列、20
+次重复；各方法的目标、结局分布和安全规则见相应代码。
+
+查看 R 与依赖包版本
+
+\begin{verbatim}
+## R version 4.4.2 (2024-10-31 ucrt)
+## Platform: x86_64-w64-mingw32/x64
+## Running under: Windows 11 x64 (build 22631)
+## 
+## Matrix products: default
+## 
+## 
+## locale:
+## [1] LC_COLLATE=Chinese (Simplified)_China.utf8 
+## [2] LC_CTYPE=Chinese (Simplified)_China.utf8   
+## [3] LC_MONETARY=Chinese (Simplified)_China.utf8
+## [4] LC_NUMERIC=C                               
+## [5] LC_TIME=Chinese (Simplified)_China.utf8    
+## 
+## time zone: Asia/Shanghai
+## tzcode source: internal
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] UnifiedDoseFinding_0.1.10
+## 
+## loaded via a namespace (and not attached):
+##  [1] compiler_4.4.2    fastmap_1.2.0     cli_3.6.3         tools_4.4.2      
+##  [5] htmltools_0.5.8.1 rstudioapi_0.17.1 yaml_2.3.10       rmarkdown_2.29   
+##  [9] knitr_1.49        xfun_0.53         digest_0.6.37     rlang_1.1.6      
+## [13] evaluate_1.0.3
+\end{verbatim}
+
+\end{document}

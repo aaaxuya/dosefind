@@ -1,0 +1,73 @@
+---
+title: "Ⅰ期临床试验剂量探索"
+subtitle: "CRM、Quasi-CRM 与 BOIN 方法比较"
+author: "阿许"
+date: today
+
+format:
+  revealjs:
+    theme: solarized
+    transition: fade
+    transition-speed: fast
+    progress: true
+    slide-number: true
+    incremental: true
+    footer: "UnifiedDoseFinding | 方法学研究"
+    code-fold: true
+---
+
+## Research Question {background-gradient="linear-gradient(135deg, #132C52, #087E8B)" background-color="#132C52"}
+
+# Can toxicity grades improve dose finding?
+
+**How can we utilize more information from patients?**
+
+\## 研究背景
+
+Ⅰ期临床试验的核心问题：
+
+**如何在控制毒性风险的同时，找到合适的剂量？**
+
+## 研究方法
+
+- CRM
+- Quasi-CRM
+- Robust-Quasi-CRM
+- BOIN
+
+## 模拟实验
+
+```{r}
+dose <- 1:6
+p <- c(0.11, 0.25, 0.40, 0.55, 0.75, 0.85)
+
+plot(dose, p, type = "b", pch = 19)
+```
+
+## 下一步研究计划
+
+比较不同方法的：
+
+- MTD 正确选择率
+- 患者毒性暴露
+- 稳健性
+
+## 方法比较
+
+::::: columns
+::: {.column width="50%"}
+### CRM
+
+- 使用二分类 DLT 信息
+- 需要预设 Skeleton
+- 通过模型更新毒性概率
+:::
+
+::: {.column width="50%"}
+### Quasi-CRM
+
+- 利用多等级毒性信息
+- 为不同等级赋予评分
+- 利用更丰富的毒性数据
+:::
+:::::

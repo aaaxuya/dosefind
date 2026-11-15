@@ -1,0 +1,175 @@
+---
+title: "剂量探索方法的 PCS 比较"
+subtitle: "UnifiedDoseFinding · Quasi-CRM / Robust-Quasi-CRM / Quasi-BOIN"
+author: "研究演示"
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-fold: true
+    page-layout: article
+server: shiny
+engine: knitr
+---
+
+## 研究问题
+
+在同一个真实剂量—毒性场景下，比较三种使用毒性等级信息的方法，观察**模拟重复次数**改变时，正确选择最大耐受剂量的概率（PCS）如何变化。
+
+这里的 PCS 定义为：
+
+$$
+\widehat{PCS}=\frac{\text{选择真实 MTD 的模拟试验次数}}{\text{模拟试验总次数}}\times100\%.
+$$
+
+使用 `UnifiedDoseFinding` 包文档中的 Scenario 1：6 个剂量水平，4 个毒性等级，毒性评分为 `c(0, 0.5, 1, 1.5)`，目标平均等效毒性评分为 **0.47**；每项试验入组 10 组、每组 3 人。第 **4** 剂量的真实平均评分为 **0.475**，最接近目标值，因而定义为该场景的真实 MTD。
+
+> 本演示仅比较一个场景下的蒙特卡洛 PCS，不能据此判断某方法在所有情形下更优。
+
+## 调整模拟次数
+
+拖动滑块设定 `ntrial`，再点击 **运行模拟**。为避免复杂的贝叶斯积分计算反复触发，这里不会在拖动过程中自动执行。
+
+```{r}
+#| echo: false
+shiny::sliderInput(
+  inputId = "ntrial",
+  label = "每种方法的模拟试验次数（ntrial）",
+  min = 10, max = 200, value = 20, step = 10,
+  width = "100%"
+)
+shiny::actionButton("run", "运行模拟", class = "btn-primary")
+shiny::textOutput("status")
+```
+
+## PCS 比较结果
+
+```{r}
+#| echo: false
+shiny::plotOutput("pcs_plot", height = "370px")
+shiny::tableOutput("pcs_table")
+```
+
+## 模拟设定和方法说明
+
+| 项目               | 固定设定                                          |
+|--------------------|---------------------------------------------------|
+| 毒性评分           | 0、0.5、1、1.5                                    |
+| 目标平均毒性评分   | 0.47                                              |
+| 剂量水平           | 1–6                                               |
+| 每项试验患者数上限 | 30（10 组 × 3 人）                                |
+| 真实 MTD           | 第 4 剂量（真实平均评分 0.475）                   |
+| Quasi-CRM          | 1 条 Skeleton                                     |
+| Robust-Quasi-CRM   | 3 条 Skeleton，默认 Bayesian model selection      |
+| Quasi-BOIN         | 同一真实毒性分布，评分和目标按最大分值 1.5 归一化 |
+| 随机种子           | 2026（每次运行固定，便于重现）                    |
+
+**说明：** 三个设计的停止规则、模型机制等并不完全相同；此处仅做入门演示。PCS 可能因模拟次数较小而明显波动，也不能把抽样波动误认为方法性能差异。
+
+```{r}
+#| context: server
+
+simulation_results <- shiny::eventReactive(input$run, {
+  # 这个代码块属于 Shiny 的 server context，点击按钮才会执行。
+  if (!requireNamespace("UnifiedDoseFinding", quietly = TRUE)) {
+    stop("缺少 UnifiedDoseFinding 包，请在 R 控制台运行 install.packages('UnifiedDoseFinding')")
+  }
+
+  ntrial <- as.integer(input$ntrial)
+  target <- 0.47
+  score <- c(0, 0.5, 1, 1.5)
+  ptox <- rbind(
+    c(0.83, 0.75, 0.62, 0.51, 0.34, 0.19),
+    c(0.12, 0.15, 0.18, 0.19, 0.16, 0.11),
+    c(0.04, 0.07, 0.11, 0.14, 0.15, 0.11),
+    c(0.01, 0.03, 0.09, 0.16, 0.35, 0.59)
+  )
+  p1 <- c(0.11, 0.25, 0.40, 0.55, 0.75, 0.85)
+  p2 <- c(0.05, 0.10, 0.15, 0.25, 0.40, 0.65)
+  p3 <- c(0.20, 0.40, 0.60, 0.75, 0.85, 0.95)
+  true_mean_score <- as.vector(crossprod(score, ptox))
+  true_mtd <- which.min(abs(true_mean_score - target))
+
+  shiny::withProgress(message = "正在进行剂量探索模拟", value = 0, {
+    quasi <- UnifiedDoseFinding::get_oc_RQ_CRM(
+      ptox = ptox, skeletons = p1,
+      target = target, score = score,
+      cohortsize = 3, ncohort = 10,
+      ntrial = ntrial, seed = 2026
+    )
+    shiny::incProgress(1 / 3, detail = "Quasi-CRM 完成")
+
+    robust <- UnifiedDoseFinding::get_oc_RQ_CRM(
+      ptox = ptox, skeletons = rbind(p1, p2, p3),
+      target = target, score = score,
+      cohortsize = 3, ncohort = 10,
+      ntrial = ntrial, seed = 2026
+    )
+    shiny::incProgress(1 / 3, detail = "Robust-Quasi-CRM 完成")
+
+    # Quasi-BOIN 文档采用标准化到 [0,1] 的 ET 分值。
+    # 真实概率矩阵则要求每一行对应一个剂量。
+    boin <- UnifiedDoseFinding::get_oc_QuasiBOIN(
+      target = target / max(score),
+      p.true = t(ptox), score = score / max(score),
+      ncohort = 10, cohortsize = 3,
+      ntrial = ntrial, seed = 2026
+    )
+    shiny::incProgress(1 / 3, detail = "Quasi-BOIN 完成")
+
+    pcs <- c(
+      "Quasi-CRM" = quasi$selpercent[true_mtd],
+      "Robust-Quasi-CRM" = robust$selpercent[true_mtd],
+      "Quasi-BOIN" = boin$selpercent[true_mtd]
+    )
+
+    list(
+      pcs = pcs,
+      ntrial = ntrial,
+      true_mtd = true_mtd,
+      true_mean_score = true_mean_score
+    )
+  })
+})
+
+output$status <- shiny::renderText({
+  if (input$run == 0) {
+    "点击【运行模拟】开始计算；首次建议使用 20 次。"
+  } else {
+    result <- simulation_results()
+    paste0("已完成：每种方法 ", result$ntrial,
+           " 次试验；真实 MTD 为第 ", result$true_mtd, " 剂量。")
+  }
+})
+
+output$pcs_plot <- shiny::renderPlot({
+  result <- simulation_results()
+  pcs <- result$pcs
+  cols <- c("#2563EB", "#0D9488", "#F59E0B")
+
+  oldpar <- par(mar = c(4, 11, 3, 2))
+  on.exit(par(oldpar))
+  centers <- barplot(
+    rev(pcs), horiz = TRUE,
+    col = rev(cols), border = NA,
+    xlim = c(0, 115),
+    xlab = "PCS (%)", main = "真实 MTD 的正确选择率",
+    las = 1, cex.names = 0.95, axes = FALSE
+  )
+  axis(1, at = seq(0, 100, 20))
+  abline(v = seq(0, 100, 20), col = "#E2E8F0", lty = 3)
+  text(rev(pcs) + 2, centers,
+       labels = sprintf("%.1f%%", rev(pcs)),
+       adj = 0, col = "#334155", cex = 1.05)
+})
+
+output$pcs_table <- shiny::renderTable({
+  result <- simulation_results()
+  data.frame(
+    "方法" = names(result$pcs),
+    "PCS (%)" = round(unname(result$pcs), 1),
+    "模拟次数" = rep(result$ntrial, length(result$pcs)),
+    check.names = FALSE
+  )
+}, striped = TRUE, hover = TRUE, bordered = FALSE)
+```

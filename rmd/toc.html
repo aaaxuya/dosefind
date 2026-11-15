@@ -1,0 +1,39 @@
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('p').forEach(function (p) {
+    if (p.children.length === 1 && p.firstElementChild.tagName === 'STRONG' &&
+        p.textContent.trim() === p.firstElementChild.textContent.trim()) p.classList.add('step-label');
+  });
+  var toc = document.getElementById('TOC');
+  if (!toc) return;
+  toc.setAttribute('aria-label', '目录');
+  var title = document.createElement('div');
+  title.className = 'toc-title';
+  title.textContent = '目录';
+  var hint = document.createElement('div');
+  hint.className = 'toc-hint';
+  hint.textContent = '箭头展开 · 标题跳转';
+  toc.prepend(hint);
+  toc.prepend(title);
+  toc.querySelectorAll('li').forEach(function (item) {
+    var list = Array.from(item.children).find(function (el) { return el.tagName === 'UL'; });
+    var link = Array.from(item.children).find(function (el) { return el.tagName === 'A'; });
+    if (!list || !link) return;
+    var details = document.createElement('details');
+    var summary = document.createElement('summary');
+    summary.appendChild(link);
+    details.appendChild(summary);
+    details.appendChild(list);
+    item.appendChild(details);
+    link.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+      if (target) {
+        target.scrollIntoView({ behavior: 'instant', block: 'start' });
+        history.replaceState(null, '', link.hash);
+      }
+    });
+  });
+});
+</script>

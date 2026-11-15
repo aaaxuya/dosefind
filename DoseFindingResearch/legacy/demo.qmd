@@ -1,0 +1,52 @@
+---
+title: "剂量探索方法研究笔记"
+author: "xu"
+date: today
+format:
+  html:
+    toc: true
+    code-fold: true
+engine: knitr
+---
+
+# 一、研究背景
+
+本研究关注Ⅰ期临床试验中的剂量探索方法。
+
+目前主要学习以下方法：
+
+- CRM
+- Quasi-CRM
+- Robust-Quasi-CRM
+- BOIN
+
+# 二、CRM 的 Skeleton
+
+以下是之前使用过的一组 Skeleton：
+
+```{r}
+dose <- 1:6
+
+p <- c(0.11, 0.25, 0.40,
+       0.55, 0.75, 0.85)
+
+plot(
+  dose, p,
+  type = "b",
+  pch = 19,
+  col = "steelblue",
+  xlab = "Dose Level",
+  ylab = "Skeleton Probability",
+  main = "CRM Skeleton"
+)
+```
+
+# 三、研究思考
+
+目前重点关注如何更充分地利用患者的毒性等级信息。
+
+后续计划比较不同方法的：
+
+1.  正确选择 MTD 的概率
+2.  患者毒性暴露情况
+3.  方法的稳健性
