@@ -8,20 +8,100 @@ output:
     toc_depth: 2
     number_sections: true
     highlight: tango
-    css: report.css
-    includes:
-      after_body: toc.html
-  pdf_document:
-    toc: true
-    toc_depth: '2'
+    self_contained: true
+    mathjax: null
+    pandoc_args: ["--mathml"]
 lang: "zh-Hans"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, error = FALSE, warning = FALSE,
-                     fig.width = 8, fig.height = 4, dpi = 144)
+knitr::opts_chunk$set(echo = TRUE, error = FALSE)
+
+if (!requireNamespace("UnifiedDoseFinding", quietly = TRUE)) {
+  install.packages("UnifiedDoseFinding")
+}
+
 options(knitr.kable.NA = "—")
 library(UnifiedDoseFinding)
+```
+
+```{=html}
+<style type="text/css">
+:root { --ink: #243347; --muted: #657487; --accent: #244c70; --line: #dce3ea; }
+html { scroll-behavior: auto; }
+body { color: var(--ink); background: #fff; font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif; font-size: 16px; line-height: 1.8; }
+.main-container { max-width: 980px; padding: 30px 32px 64px; }
+#header { padding: 12px 0 24px; margin-bottom: 28px; border-bottom: 3px solid var(--accent); }
+#header .title { font-size: 32px; line-height: 1.4; letter-spacing: .02em; margin: 0 0 12px; border: 0; padding: 0; }
+#header .subtitle { font-size: 18px; color: var(--muted); margin: 0 0 12px; }
+#header .date { font-size: 13px; color: var(--muted); }
+h1, h2 { color: var(--ink); font-weight: 600; line-height: 1.5; }
+.section > h1 { font-size: 25px; margin: 46px 0 22px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.section > h2 { font-size: 20px; margin: 28px 0 16px; }
+.header-section-number { color: #7b8da0; margin-right: 8px; font-weight: 400; }
+p { margin: 0 0 15px; }
+p.step-label { margin: 25px 0 12px; padding-left: 11px; border-left: 3px solid #9db3c7; color: var(--accent); }
+a { color: #285f89; }
+blockquote { margin: 24px 0; padding: 15px 20px; border-left: 3px solid #8ca9bf; background: #f3f6f9; font-size: 15px; }
+blockquote p:last-child { margin-bottom: 0; }
+pre, code { font-family: Consolas, "Cascadia Mono", "Microsoft YaHei", monospace; }
+code { color: #32546e; background: #f1f4f7; font-size: .88em; border-radius: 3px; padding: 2px 4px; }
+pre { font-size: 13px; line-height: 1.65; border: 1px solid #e2e7ec; border-radius: 5px; padding: 16px 18px; margin: 14px 0 20px; background: #f7f9fb; }
+pre code { padding: 0; background: transparent; color: inherit; font-size: inherit; }
+pre:not(.sourceCode):not(.r) { border-left: 3px solid #becbd5; background: #fff; }
+table { width: 100%; margin: 22px 0 28px; font-size: 14px; line-height: 1.65; border-collapse: collapse; }
+table caption { color: var(--muted); font-size: 14px; text-align: left; padding: 0 0 9px; }
+table th { background: #edf2f6; color: #29455c; font-weight: 600; border-top: 1px solid #ccd7e0; border-bottom: 1px solid #ccd7e0; }
+table th, table td { padding: 10px 12px !important; vertical-align: top; border-bottom: 1px solid #e5eaf0; }
+table tbody tr:nth-child(even) { background: #fafbfd; }
+table code { background: transparent; padding: 0; overflow-wrap: anywhere; white-space: normal; font-size: 12px; }
+img { max-width: 100%; height: auto; }
+.session-info { border: 1px solid var(--line); border-radius: 5px; padding: 12px 16px; margin: 20px 0; }
+.session-info summary { cursor: pointer; color: var(--accent); }
+.session-info pre { margin-bottom: 0; }
+#TOC { font-size: 14px; line-height: 1.6; border: 1px solid var(--line); border-radius: 5px; padding: 18px; background: #fafbfd; margin-bottom: 24px; }
+#TOC .toc-title { font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+#TOC .toc-hint { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+#TOC ul { list-style: none; padding-left: 16px; margin: 0; }
+#TOC > ul { padding-left: 0; }
+#TOC li { margin: 10px 0; }
+#TOC summary { cursor: pointer; }
+#TOC summary::marker { color: #8197aa; }
+#TOC a { color: #405467; text-decoration: none; }
+#TOC a:hover { color: #1e5c8a; text-decoration: underline; }
+#TOC a:focus-visible, #TOC summary:focus-visible { outline: 2px solid #337ab7; outline-offset: 3px; }
+@media (min-width: 1100px) {
+  .main-container { max-width: 1280px; padding-left: 290px; padding-right: 38px; }
+  #TOC { position: fixed; top: 28px; left: max(18px, calc((100vw - 1280px) / 2 + 18px)); width: 238px; max-height: calc(100vh - 56px); overflow-y: auto; }
+}
+@media (max-width: 600px) {
+  .main-container { padding: 20px 18px 40px; }
+  #header .title { font-size: 26px; }
+  body { font-size: 15px; }
+  table { font-size: 12px; }
+  table th, table td { padding: 8px 5px !important; }
+}
+@media print {
+  #TOC { display: none; }
+  .main-container { padding: 0; max-width: none; }
+  body { font-size: 11pt; }
+  h1, h2, .step-label { break-after: avoid; }
+  table, img { break-inside: avoid; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  a[href]:after { content: none !important; }
+}
+.function-map { max-width: 740px; margin: 24px 0; text-align: center; }
+.function-map-oc, .function-map-step { padding: 10px; border-radius: 4px; }
+.function-map-oc { background: #e9f3e7; border: 1px solid #54854c; margin-bottom: 12px; }
+.function-map-trial { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; }
+.function-map-step { background: #e8f1fa; border: 1px solid #457b9d; }
+.function-map code { background: transparent; }
+.function-map-arrow span { font-size: 22px; line-height: 1; }
+@media (max-width: 520px) {
+  .function-map-trial { grid-template-columns: 1fr; }
+  .function-map-arrow span { display: inline-block; transform: rotate(90deg); }
+}
+</style>
 ```
 
 # 包概览
@@ -44,18 +124,15 @@ UnifiedDoseFinding 为Ⅰ期剂量探索试验提供剂量决策与模拟工具�
 
 其中，OC 指 operating characteristics（操作特征）。`get_oc_*` 在指定的真实场景下反复生成患者结局并执行完整试验，汇总各剂量的选择百分比和平均入组人数。
 
-```{r function-map, echo=FALSE, fig.height=3.2}
-par(mar = c(0, 0, 0, 0))
-plot.new()
-plot.window(xlim = c(0, 10), ylim = c(0, 4))
-rect(0.5, 1, 3.2, 2.2, col = "#E8F1FA", border = "#457B9D")
-rect(6.8, 1, 9.5, 2.2, col = "#E8F1FA", border = "#457B9D")
-text(1.85, 1.6, "next_*\n下一批剂量决策")
-text(8.15, 1.6, "select_mtd_*\n试验结束，选择剂量")
-arrows(3.3, 1.6, 6.6, 1.6, length = 0.1)
-text(5, 2, "逐批积累患者数据")
-rect(0.5, 2.8, 9.5, 3.8, col = "#E9F3E7", border = "#54854C")
-text(5, 3.3, "get_oc_*：在假定真实场景下，模拟多次完整试验")
+```{=html}
+<div class="function-map" role="group" aria-label="剂量探索函数流程">
+  <div class="function-map-oc"><code>get_oc_*</code> 在假定真实场景下，模拟多次完整试验</div>
+  <div class="function-map-trial">
+    <div class="function-map-step"><code>next_*</code><br>下一批剂量决策</div>
+    <div class="function-map-arrow">逐批积累患者数据<br><span aria-hidden="true">→</span></div>
+    <div class="function-map-step"><code>select_mtd_*</code><br>试验结束，选择剂量</div>
+  </div>
+</div>
 ```
 
 ## 18 个函数的对应关系
@@ -270,6 +347,106 @@ knitr::kable(data.frame(
 
 # Quasi-BOIN
 
+## 数学原理：把平均毒性评分放进决策区间
+
+Quasi-BOIN 要寻找的是**平均毒性评分接近预定目标的剂量**。假设候选剂量按从低到高编号为 $j=1,\ldots,J$，平均毒性随剂量不下降。每一批患者完成观察后，先用当前剂量的累计数据估计平均毒性，再决定下一批升一级、降一级或维持。下面的公式对应本包的 [Quasi-BOIN 边界实现](https://github.com/cran/UnifiedDoseFinding/blob/master/R/get_boundary_QuasiBOIN.R)。
+
+**从患者评分得到要比较的均值**
+
+记剂量 $j$ 的第 $i$ 名患者原始评分为 $s_{ij}$，最大可能评分为 $s_{\max}$。归一化后定义
+
+$$
+z_{ij}=\frac{s_{ij}}{s_{\max}}\in[0,1],\qquad
+y_j=\sum_{i=1}^{n_j}z_{ij},\qquad
+\widehat p_j=\frac{y_j}{n_j},\qquad
+\phi=\frac{\text{原始目标评分}}{s_{\max}}.
+$$
+
+这里 $n_j$ 是该剂量累计治疗人数，$p_j=E(z_{ij})$ 是未知的真实平均归一化评分，$\widehat p_j$ 是它的样本估计。代码中的 `n[j]`、`y[j]` 和 `target` 分别对应 $n_j$、$y_j$ 和 $\phi$。虽然用字母 $p$，它在本例中表示评分均值；只有患者结局本身为 0/1 时，才同时表示事件概率。
+
+**为什么称为 Quasi：用分数评分构造准似然**
+
+对于二元结局，二项似然中与 $p_j$ 有关的部分是 $p_j^{y_j}(1-p_j)^{n_j-y_j}$。Quasi-BOIN 把同样的形式用于 $[0,1]$ 内的评分：
+
+$$
+L_j(p)\propto\prod_{i=1}^{n_j}p^{z_{ij}}(1-p)^{1-z_{ij}}
+=p^{y_j}(1-p)^{n_j-y_j}.
+$$
+
+例如，一名患者的 $z_{ij}=1/3$，就对两个指数分别贡献 $1/3$ 和 $2/3$。这里允许 $y_j$ 为小数，因此称为准似然；它提供比较候选均值的依据，并没有把评分当成真实的 DLT 人数。对其对数求导，得到 $y_j/p-(n_j-y_j)/(1-p)=0$，解仍是 $\widehat p_j=y_j/n_j$。
+
+**两个边界从哪里来**
+
+试验前设定三个参考均值：目标 $\phi$、明显低于目标的 $\phi_1$（`p.saf`），以及明显高于目标的 $\phi_2$（`p.tox`），满足 $0<\phi_1<\phi<\phi_2<1$。它们分别代表“应升剂量”“应维持”“应降剂量”的典型情形。`p.saf` 和 `p.tox` 是用于推导边界的参考值，并非实际比较时使用的两个边界。
+
+在三个参考情形等先验权重的局部比较下，升剂量与维持的分界可由 $L_j(\phi_1)=L_j(\phi)$ 求出。两边取对数并除以 $n_j$：
+
+$$
+\widehat p_j\log\frac{\phi_1}{\phi}
++(1-\widehat p_j)\log\frac{1-\phi_1}{1-\phi}=0.
+$$
+
+解出 $\widehat p_j$，再对 $L_j(\phi)=L_j(\phi_2)$ 做同样的计算，就得到
+
+$$
+\lambda_e=
+\frac{\log\{(1-\phi_1)/(1-\phi)\}}
+{\log\{\phi(1-\phi_1)/[\phi_1(1-\phi)]\}},\qquad
+\lambda_d=
+\frac{\log\{(1-\phi)/(1-\phi_2)\}}
+{\log\{\phi_2(1-\phi)/[\phi(1-\phi_2)]\}}.
+$$
+
+下标 $e$、$d$ 分别表示 escalation（升剂量）和 de-escalation（降剂量）。常规决策规则为
+
+$$
+\text{下一剂量}=\begin{cases}
+\min(j+1,J), & \widehat p_j\leq\lambda_e,\\
+j, & \lambda_e<\widehat p_j<\lambda_d,\\
+\max(j-1,1), & \widehat p_j\geq\lambda_d.
+\end{cases}
+$$
+
+这就是“区间设计”：观察均值落在中间区间时继续积累当前剂量的数据，越过边界才调整。代码也可把规则写成 $y_j\leq n_j\lambda_e$ 或 $y_j\geq n_j\lambda_d$；两种写法等价。边界在试验前即可确定，无需每次重新拟合整条剂量—毒性曲线。
+
+**过毒剔除：在升降规则之外增加安全判断**
+
+用均匀先验 $\operatorname{Beta}(1,1)$ 配合上述准似然，可得工作后验
+
+$$
+p_j\mid\mathcal D_j\sim\operatorname{Beta}(1+y_j,1+n_j-y_j),\qquad
+\Pr(p_j>\phi\mid\mathcal D_j)
+=1-F_{\mathrm{Beta}}(\phi;1+y_j,1+n_j-y_j).
+$$
+
+$\mathcal D_j$ 表示该剂量已观察的数据，$F_{\mathrm{Beta}}$ 是 Beta 分布的累积分布函数，在 R 中对应 `pbeta()`。当至少已有 3 名患者且这个尾概率超过 `cutoff.eli`，就有较强证据认为该剂量过毒；结合单调性，应剔除该剂量及更高剂量。如果最低剂量被剔除，则停止试验。
+
+**本版实现的区别：**`next_QuasiBOIN()` 先在整数 $k=1,\ldots,n_j$ 中寻找使上述尾概率超过阈值的最小 $k$，再用实际累计评分 $y_j\geq k$ 判断剔除；必要时还会把降剂量阈值降到这个剔除阈值。`select_mtd_QuasiBOIN()` 则直接把实际的、可为小数的 $y_j$ 代入 Beta 尾概率。两者的剔除判断不能在小数评分下直接视为完全相同。常规升降边界 $n_j\lambda_e$、$n_j\lambda_d$ 本身不取整。
+
+**最终剂量：为什么还要做保序回归**
+
+下一批给药只需决定从当前剂量往哪走；试验结束则需要比较所有已试验且未被剔除的剂量。小样本可能出现“高剂量的观察均值反而更低”，保序回归利用毒性均值不下降的假设来平滑这种波动。设各剂量的初步估计为 $a_j$、权重为 $w_j>0$，保序估计解的是
+
+$$
+(\widetilde p_j)_{j\in\mathcal A}
+=\underset{\{u_j:j\in\mathcal A\}\text{ 随剂量不下降}}{\arg\min}
+\sum_{j\in\mathcal A}w_j(a_j-u_j)^2,
+\qquad
+\widehat j=\underset{j\in\mathcal A}{\arg\min}\;|\widetilde p_j-\phi|.
+$$
+
+$\mathcal A$ 是可供最终选择的剂量集合。PAVA（相邻违序合并算法）的做法很直观：若相邻两个估计是 0.40、0.30，违反递增顺序，就先合并为加权平均；当对应人数为 3、6 且采用人数权重时，两者都变为 $(3\times0.40+6\times0.30)/9\approx0.333$。重复合并，直到没有下降为止。
+
+本版 Quasi-BOIN 最终选择先计算 $a_j=(y_j+0.05)/(n_j+0.1)$，这是加入很小伪计数后的平滑估计；使用相应 Beta 方差的倒数作为权重，即
+
+$$
+v_j=\frac{(y_j+0.05)(n_j-y_j+0.05)}{(n_j+0.1)^2(n_j+1.1)},\qquad w_j=1/v_j.
+$$
+
+方差较小的估计在合并时权重更大。最后选保序均值最接近 $\phi$ 的剂量，并用极小扰动处理并列情形。这里用于平滑的 0.05 与安全判断中使用的先验参数 1 分属不同步骤。[最终选择实现](https://github.com/cran/UnifiedDoseFinding/blob/master/R/select_mtd_QuasiBOIN.R)
+
+## 代码演示
+
 **准备数据**
 
 Quasi-BOIN 使用归一化评分。与前面的 RQ-CRM 不同，这里的目标也要在调用前归一化。 `y` 已经是归一化评分的累计值，可以直接沿用。
@@ -284,10 +461,22 @@ d_qb <- dose_current
 
 这里的 `target_qb` 是目标平均归一化评分，不是 DLT 发生率。
 
-**下一批剂量**
+先把刚才的公式代入本例，看看函数将比较哪些数：
 
-```{r qb-next}
+```{r qb-principle-calculation}
+phi1_qb <- 0.6 * target_qb
+phi2_qb <- 1.4 * target_qb
+lambda_e_qb <- log((1 - phi1_qb) / (1 - target_qb)) /
+  log(target_qb * (1 - phi1_qb) / (phi1_qb * (1 - target_qb)))
+lambda_d_qb <- log((1 - target_qb) / (1 - phi2_qb)) /
+  log(phi2_qb * (1 - target_qb) / (target_qb * (1 - phi2_qb)))
+c(target = target_qb, lower = lambda_e_qb, upper = lambda_d_qb,
+  observed_mean = y_qb[d_qb] / n_qb[d_qb])
 ```
+
+目标约为 0.3133，升、降边界约为 0.2471 和 0.3746。当前剂量 5 的平均归一化评分为 $3/3=1$，高于降剂量边界，因此常规规则建议降至剂量 4；它同时满足本例的过毒剔除条件。后面的函数会把这些判断合在一起执行。
+
+**下一批剂量**
 
 ```{r qb-next}
 next_dose_qb <- next_QuasiBOIN(
@@ -347,6 +536,56 @@ knitr::kable(data.frame(
 
 Ivanova unified design 使用当前剂量下的标准化统计量进行升降决策；试验结束时通过保序估计选择接近目标的剂量。[Ivanova 与 Kim（2009）](#参考资料)
 
+## 数学原理：用标准误衡量离目标有多远
+
+设 $X_{ij}$ 是剂量 $j$ 下第 $i$ 名患者的结局，$\mu_j=E(X_{ij})$ 随剂量不下降，目标为 $\theta$。二元结局下，$\mu_j$ 就是 DLT 概率；连续结局下，它是连续指标的均值。两种结局采用同一个思路：不仅看观察均值是否高于目标，还看这段差距相对于抽样波动有多大。
+
+记当前剂量的均值为 $\overline X_j$、均值的估计标准误为 $\widehat{\operatorname{SE}}(\overline X_j)$，定义
+
+$$
+T_j=\frac{\overline X_j-\theta}{\widehat{\operatorname{SE}}(\overline X_j)}.
+$$
+
+$T_j=2$ 表示“观察均值高于目标约两个标准误”，$T_j=-2$ 则表示低于目标约两个标准误。预先指定容忍阈值 $\varepsilon>0$（代码中的 `eps`），在当前剂量已有至少 2 名患者、标准误可计算时，规则是
+
+$$
+\text{下一剂量}=\begin{cases}
+\min(j+1,J), & T_j<-\varepsilon,\\
+j, & -\varepsilon\leq T_j\leq\varepsilon,\\
+\max(j-1,1), & T_j>\varepsilon.
+\end{cases}
+$$
+
+等价地，观察均值位于 $\theta\pm\varepsilon\widehat{\operatorname{SE}}(\overline X_j)$ 内时维持剂量。`eps` 越大，维持范围越宽；在观察均值和个体变异相同的条件下，人数增加会使标准误缩小，同样的均值偏差更容易触发调整。因此，Ivanova 的维持区间会随当前数据变化。`eps = 1` 是设计参数，并不表示进行了显著性水平为 0.05 的检验。
+
+**二元结局：标准误来自 Bernoulli 方差**
+
+若 $X_{ij}\in\{0,1\}$，则 $y_j=\sum_iX_{ij}$ 是 DLT 人数，$\widehat p_j=y_j/n_j$。由于独立 Bernoulli 观测的方差为 $p_j(1-p_j)$，均值方差为 $p_j(1-p_j)/n_j$，代入估计量得到
+
+$$
+T_j\approx\frac{\widehat p_j-\theta}
+{\sqrt{\widehat p_j(1-\widehat p_j)/n_j}}.
+$$
+
+[本版二元函数](https://github.com/cran/UnifiedDoseFinding/blob/master/R/next_Ivanova_binary.R) 为处理零事件情况，在分母中实际使用 $\widehat p_j^*=\max(\widehat p_j,0.001)$，即 $\sqrt{\widehat p_j^*(1-\widehat p_j^*)/n_j}$；分子仍用原来的 $\widehat p_j$。本例当前剂量有 4/15 的 DLT，该修正不改变计算。当前剂量仅有 1 名患者时，函数维持剂量。
+
+**连续结局：标准误来自个体间的样本标准差**
+
+对于连续观测，先计算
+
+$$
+\overline X_j=\frac{1}{n_j}\sum_{i=1}^{n_j}X_{ij},\qquad
+s_j^2=\frac{1}{n_j-1}\sum_{i=1}^{n_j}(X_{ij}-\overline X_j)^2,
+\qquad
+T_j=\frac{\overline X_j-\theta}{s_j/\sqrt{n_j}}.
+$$
+
+这里 $s_j$ 是患者结局的标准差，$s_j/\sqrt{n_j}$ 才是均值的标准误。在 R 中它们分别对应 `sd(c_resp[[j]])` 和 `sd(c_resp[[j]]) / sqrt(n[j])`。只保留总和 $y_j$ 与人数 $n_j$ 无法恢复 $s_j$，这就是 [连续函数](https://github.com/cran/UnifiedDoseFinding/blob/master/R/next_Ivanova_continuous.R) 要求传入个体数据列表 `c_resp` 的原因。
+
+**试验结束：从局部决策转为跨剂量比较**
+
+最终选择使用前文介绍的 PAVA：对已观察剂量的原始均值 $a_j=\overline X_j$ 做保序回归，权重为 $w_j=n_j$，然后选择保序均值与目标 $\theta$ 距离最小的剂量。人数较多的剂量在合并时影响更大。二元与连续版本都采用这一步，并在并列处理时作很小的数值修正。`eps` 只影响试验过程中的升降规则，所以 `select_mtd_Ivanova_*()` 不需要传入它。
+
 ## 二元结局
 
 **准备数据**
@@ -360,6 +599,18 @@ n_ib <- c(3, 15, 0, 0, 0, 0)
 y_ib <- c(0, 4, 0, 0, 0, 0)
 d_ib <- 2
 ```
+
+用当前剂量的数据手算标准化差距：
+
+```{r iv-binary-principle-calculation}
+p_hat_ib <- y_ib[d_ib] / n_ib[d_ib]
+p_var_ib <- max(p_hat_ib, 0.001)  # 与本版函数的分母修正一致
+se_ib <- sqrt(p_var_ib * (1 - p_var_ib) / n_ib[d_ib])
+t_ib <- (p_hat_ib - target_ib) / se_ib
+c(observed_rate = p_hat_ib, standard_error = se_ib, statistic = t_ib)
+```
+
+这里 $\widehat p_2=4/15\approx0.2667$，$T_2\approx-0.292$。虽然观察 DLT 率低于目标 0.30，但差距不到一个标准误；`eps = 1` 时应维持剂量 2。
 
 **下一批剂量**
 
@@ -429,6 +680,17 @@ d_ic <- 4
 
 `numeric(0)` 表示该剂量还没有观测值；`lengths()` 统计各元素长度，得到各剂量人数。
 
+```{r iv-continuous-principle-calculation}
+mean_ic <- mean(c_resp_ic[[d_ic]])
+sd_ic <- sd(c_resp_ic[[d_ic]])
+se_ic <- sd_ic / sqrt(n_ic[d_ic])
+t_ic <- (mean_ic - target_ic) / se_ic
+c(observed_mean = mean_ic, sample_sd = sd_ic,
+  standard_error = se_ic, statistic = t_ic)
+```
+
+当前剂量 4 的 9 名患者平均结局约为 1.5644，样本标准差约为 0.5519，均值标准误约为 0.1840。因此 $T_4=(1.5644-1.47)/0.1840\approx0.513$，仍处于 $[-1,1]$ 内，下一批维持剂量 4。注意代码把该剂量历批患者一起用于估计，而不只使用最新一批。
+
 **下一批剂量**
 
 ```{r iv-continuous-next}
@@ -477,6 +739,66 @@ knitr::kable(data.frame(
 
 gBOIN 将观测均值与预设决策边界比较，给出升、降或维持剂量的决策。以下分别演示毒性负担和连续结局。[Mu 等（2019）](#参考资料)
 
+## 数学原理：从参考均值推导固定边界
+
+gBOIN 是 generalized Bayesian optimal interval design（广义贝叶斯最优区间设计）。它可以根据结局所采用的工作分布推导升降边界，再用简单的均值比较来执行试验。前面的 Quasi-BOIN 对归一化评分采用 Bernoulli 形式的准似然；本节 TB 和连续结局函数使用的是**正态工作模型对应的中点边界**，具体实现见 [TB 函数](https://github.com/cran/UnifiedDoseFinding/blob/master/R/next_gBOIN_TB.R) 与 [连续函数](https://github.com/cran/UnifiedDoseFinding/blob/master/R/next_gBOIN_continuous.R)。
+
+**先确定结局、目标和两个参考均值**
+
+设个体结局为 $X_{ij}$，真实均值为 $\mu_j$，目标均值为 $\theta$，并假设 $\mu_j$ 随剂量不下降。预设 $\mu_1<\theta<\mu_2$，分别代表明显偏低和明显偏高的参考均值，对应代码中的 `mu_1`、`mu_2`。这里下标 1、2 标识两个参考情形，不是第 1、2 个剂量的真实均值。
+
+**为什么边界恰好是中点**
+
+为推导规则，在当前剂量处采用 $X_{ij}\sim N(\mu,\sigma^2)$ 的工作模型；比较 $\mu=\mu_1$、$\theta$、$\mu_2$ 时使用相同方差与相同先验权重。去掉与 $\mu$ 无关的项，对数似然可写为
+
+$$
+\ell(\mu)=C-\frac{n_j}{2\sigma^2}(\overline X_j-\mu)^2.
+$$
+
+因此，比较哪一个参考均值更支持数据，就等价于比较它离观察均值有多近。令 $\ell(\mu_1)=\ell(\theta)$，即
+
+$$
+(\overline X_j-\mu_1)^2=(\overline X_j-\theta)^2,
+$$
+
+解得升剂量边界 $\lambda_e=(\theta+\mu_1)/2$。同理，比较 $\theta$ 与 $\mu_2$ 得到降剂量边界 $\lambda_d=(\theta+\mu_2)/2$。共同的 $n_j/(2\sigma^2)$ 在比较中消掉了，因此执行这条规则不需要把样本标准差传给函数。这里的正态模型用于推导边界，TB 本身仍可以是由离散等级相加得到的评分。
+
+实际决策为
+
+$$
+\text{下一剂量}=\begin{cases}
+\min(j+1,J), & \overline X_j\leq(\theta+\mu_1)/2,\\
+j, & (\theta+\mu_1)/2<\overline X_j<(\theta+\mu_2)/2,\\
+\max(j-1,1), & \overline X_j\geq(\theta+\mu_2)/2.
+\end{cases}
+$$
+
+本例设 `mu_1 = 0.6 * target`、`mu_2 = 1.4 * target`，实际边界就是 $0.8\theta$ 和 $1.2\theta$。患者增多会使观察均值更稳定，但不会改变这两个边界；这与 Ivanova 用标准误决定维持范围的方式不同。本版这两个 `next_gBOIN_*()` 函数仅执行上述升降及剂量范围限制，没有 Quasi-BOIN 的 Beta 后验过毒剔除步骤。
+
+**TB 如何把多种毒性合成一个结局**
+
+设共有 $K$ 种毒性，$G_{ijk}$ 表示患者 $i$ 在剂量 $j$ 下第 $k$ 种毒性所属的等级，$w_{kg}$ 是该毒性类型、该等级对应的权重。患者的总毒性负担为
+
+$$
+X_{ij}=\operatorname{TB}_{ij}=\sum_{k=1}^{K}w_{k,G_{ijk}},\qquad
+y_j=\sum_{i=1}^{n_j}\operatorname{TB}_{ij},\qquad
+\overline{\operatorname{TB}}_j=y_j/n_j.
+$$
+
+例如本例权重矩阵的第 1 行第 2 列为 1.1，第 3 行第 2 列为 2.2；一名患者只有这两种毒性取对应等级、其余类型贡献均为 0 时，TB 就是 $1.1+2.2=3.3$。代码中的 `y_tb` 累加所有患者的 TB，`target_tb` 则是希望达到的**人均 TB**，所以二者不能直接比较，必须先用 `y_tb / n_tb` 求均值。
+
+模拟时，记 $\pi_{jkg}$ 为剂量 $j$ 下第 $k$ 种毒性取第 $g$ 个等级的概率，则由期望的可加性，真实平均 TB 为
+
+$$
+\mu_j=E(\operatorname{TB}_{ij})=\sum_{k=1}^{K}\sum_g w_{kg}\pi_{jkg}.
+$$
+
+这就是 `sum(pmat_tb[[j]] * weight_tb)` 的含义：先逐格将概率乘权重，再求和。`weight` 和 `pmat` 用于生成模拟患者的结局；对已经汇总好的观察数据，下一剂量函数只需要 `n` 和 `y`。一般连续结局则直接令 $X_{ij}$ 为实测值，随后仍计算 $y_j/n_j$ 并与相同形式的边界比较。
+
+**最终选择与下一批给药的区别**
+
+本版两个 `select_mtd_gBOIN_*()` 函数都在已观察剂量上计算 $a_j=(y_j+0.05)/(n_j+0.1)$，以人数 $w_j=n_j$ 为权重做前文所述的保序回归，然后选择保序均值最接近目标 $\theta$ 的剂量，并用极小扰动处理并列情形。这里的 $a_j$ 是源码采用的数值平滑公式；对于 TB 或一般连续结局，应将它理解为平滑后的均值，而非二项概率。`mu_1`、`mu_2` 控制试验过程的升降区间，最终选择直接比较与目标的距离，所以不再需要这两个参数。
+
 ## 毒性负担（TB）
 
 **准备数据**
@@ -500,6 +822,15 @@ weight_tb <- 1.1 * rbind(
 ```
 
 `y_tb` 是各剂量下所有患者 TB 的累计值，`y_tb / n_tb` 才是平均 TB。 这里使用原始 TB 尺度，不需要除以最大权重。
+
+```{r gboin-tb-principle-calculation}
+lambda_e_tb <- (target_tb + 0.6 * target_tb) / 2
+lambda_d_tb <- (target_tb + 1.4 * target_tb) / 2
+c(lower = lambda_e_tb, upper = lambda_d_tb,
+  observed_mean = y_tb[d_tb] / n_tb[d_tb])
+```
+
+本例边界为 2.6752 和 4.0128。当前剂量 2 的平均 TB 为 $26.95/9\approx2.9944$，落在中间区间，所以维持剂量 2。目标 3.344 与两个边界均使用原始 TB 单位。
 
 **下一批剂量**
 
@@ -609,6 +940,15 @@ y_gc <- sapply(c_resp_ic, sum)
 d_gc <- d_ic
 ```
 
+```{r gboin-continuous-principle-calculation}
+lambda_e_gc <- (target_gc + 0.6 * target_gc) / 2
+lambda_d_gc <- (target_gc + 1.4 * target_gc) / 2
+c(lower = lambda_e_gc, upper = lambda_d_gc,
+  observed_mean = y_gc[d_gc] / n_gc[d_gc])
+```
+
+当前剂量 4 的观察均值仍为 1.5644，边界为 $0.8\times1.47=1.176$ 和 $1.2\times1.47=1.764$，所以维持剂量 4。与 Ivanova 连续示例相比，这次推荐相同，但计算路径不同：Ivanova 计算 $T_4\approx0.513$ 后与 $\pm1$ 比较；gBOIN 直接把 1.5644 与固定边界比较。
+
 **下一批剂量**
 
 ```{r gboin-continuous-next}
@@ -669,6 +1009,17 @@ knitr::kable(data.frame(
 
 # 运行环境
 
+将本文件保存到可写目录，用 RStudio 打开并点击 **Knit**，即可在同一目录生成 HTML 报告。首次运行请保持联网，缺少 `UnifiedDoseFinding` 时会自动从 CRAN 安装。如果 RStudio 提示安装 R Markdown 组件，按提示安装后再点击 **Knit**。
+
+也可在已安装 Pandoc 的环境中，从 R 控制台运行以下命令：
+
+```{r render-instructions, eval=FALSE}
+if (!requireNamespace("rmarkdown", quietly = TRUE)) {
+  install.packages("rmarkdown", repos = "https://cloud.r-project.org")
+}
+rmarkdown::render(file.choose(), encoding = "UTF-8")  # 选中这份 Rmd
+```
+
 各节按文档顺序执行，后续示例复用前文对象。模拟统一使用随机种子 100、每队列 3 人、最多 10 个队列、20 次重复；各方法的目标、结局分布和安全规则见相应代码。
 
 <details class="session-info">
@@ -680,3 +1031,45 @@ sessionInfo()
 ```
 
 </details>
+
+```{=html}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('p').forEach(function (p) {
+    if (p.children.length === 1 && p.firstElementChild.tagName === 'STRONG' &&
+        p.textContent.trim() === p.firstElementChild.textContent.trim()) p.classList.add('step-label');
+  });
+  var toc = document.getElementById('TOC');
+  if (!toc) return;
+  toc.setAttribute('aria-label', '目录');
+  var title = document.createElement('div');
+  title.className = 'toc-title';
+  title.textContent = '目录';
+  var hint = document.createElement('div');
+  hint.className = 'toc-hint';
+  hint.textContent = '箭头展开 · 标题跳转';
+  toc.prepend(hint);
+  toc.prepend(title);
+  toc.querySelectorAll('li').forEach(function (item) {
+    var list = Array.from(item.children).find(function (el) { return el.tagName === 'UL'; });
+    var link = Array.from(item.children).find(function (el) { return el.tagName === 'A'; });
+    if (!list || !link) return;
+    var details = document.createElement('details');
+    var summary = document.createElement('summary');
+    summary.appendChild(link);
+    details.appendChild(summary);
+    details.appendChild(list);
+    item.appendChild(details);
+    link.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      var target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+      if (target) {
+        target.scrollIntoView({ behavior: 'instant', block: 'start' });
+        history.replaceState(null, '', link.hash);
+      }
+    });
+  });
+});
+</script>
+```
